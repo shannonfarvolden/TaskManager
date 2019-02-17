@@ -1,7 +1,17 @@
+import "antd/dist/antd.css";
+import { Button, Layout, Divider } from "antd";
+
+const { Header, Content, Footer } = Layout;
 const Index = () => (
-  <div>
-    <p>Home</p>
-  </div>
+  <Layout>
+    <Header />
+    <Content style={{ padding: "0 50px", marginTop: 64 }}>
+      <h3>Welcome</h3>
+      <Divider />
+      <Button type="primary">Search</Button>
+    </Content>
+    <Footer />
+  </Layout>
 );
 
 export default Index;
