@@ -1,34 +1,65 @@
-import "antd/dist/antd.css";
-import { Button, Layout, Divider } from "antd";
+import React, { Component } from 'react';
+import 'antd/dist/antd.css';
+import { Button, Layout, Divider } from 'antd';
+import axios from 'axios';
+import fetch from 'isomorphic-unfetch';
+import MainLayout from '../components/MainLayout.js';
+import MainHeader from '../components/MainHeader.js';
+import DatesChart from '../components/DatesChart.js';
 
-import MainLayout from '../components/MainLayout.js'
-import MainHeader from "../components/MainHeader.js";
+const { Content } = Layout;
 
-const { Header, Content, Footer } = Layout;
- 
-const Index = () => (
-  <MainLayout>
-    <Content style={{ padding: "0 50px", marginTop: 32 }}>
-      <MainHeader title="DRF Header Prop"/>
-      <Button shape="round">Summary</Button>
-      <Button shape="round">Dates</Button>
-      <Divider />
+class Index extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentView: 'summary'
+    };
 
-      <Button type="primary">Search</Button>
-    </Content>
-  </MainLayout>
-);
+    this.viewSummary = this.viewSummary.bind(this);
+    this.viewDates = this.viewDates.bind(this);
+  }
 
-Index.getInitialProps = async function() {
-  const res = await fetch('https://api.tvmaze.com/search/shows?q=batman')
-  const data = await res.json()
+  static getInitialProps = function() {
+    return {};
+  };
 
-  console.log(`Show data fetched. Count: ${data.length}`)
+  viewSummary(event) {
+    //TODO Call Axios
+    event.preventDefault();
+    console.log(event.currentTarget.value);
+    this.setState({
+      currentView: 'summary'
+    });
+  }
 
-  return {
-    shows: data
+  viewDates(event) {
+    //TODO Call Axios
+    event.preventDefault();
+    console.log(event.currentTarget.value);
+    this.setState({
+      currentView: 'dates'
+    });
+  }
+
+  render() {
+    let { currentView } = this.state;
+    return (
+      <MainLayout>
+        <Content style={{ padding: '0 50px', marginTop: 32 }}>
+          <MainHeader title="DRF Header Prop" />
+          <Button shape="round" onClick={this.viewSummary} value="summary">
+            Summary
+          </Button>
+          <Button shape="round" onClick={this.viewDates} value="dates">
+            Dates
+          </Button>
+          <Divider />
+        </Content>
+        <div>{currentView === 'summary' ? <h1>in summary</h1> : <DatesChart />}</div>
+      </MainLayout>
+    );
   }
 }
-
 
 export default Index;
