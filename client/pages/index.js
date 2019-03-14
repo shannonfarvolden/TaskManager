@@ -6,6 +6,7 @@ import fetch from 'isomorphic-unfetch';
 import MainLayout from '../components/MainLayout.js';
 import MainHeader from '../components/MainHeader.js';
 import DatesChart from '../components/DatesChart.js';
+import SummaryPage from '../components/SummaryPage';
 import '../components/styles/index.css';
 
 const { Content } = Layout;
@@ -60,7 +61,7 @@ class Index extends Component {
           </Row>
           <Divider />
         </Content>
-        <div>{currentView === 'summary' ? <h1>in summary</h1> : <DatesChart />}</div>
+        <div>{currentView === 'summary' ? <SummaryPage /> : <DatesChart />}</div>
       </MainLayout>
     );
   }
