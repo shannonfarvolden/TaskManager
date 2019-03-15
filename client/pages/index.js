@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import { Button, Layout, Divider } from 'antd';
+import { Button, Layout, Divider, Row, Col } from 'antd';
 import axios from 'axios';
 import fetch from 'isomorphic-unfetch';
 import MainLayout from '../components/MainLayout.js';
 import MainHeader from '../components/MainHeader.js';
 import DatesChart from '../components/DatesChart.js';
+import SummaryPage from '../components/SummaryPage';
+import '../components/styles/index.css';
 
 const { Content } = Layout;
 
@@ -15,25 +17,22 @@ class Index extends Component {
     this.state = {
       currentView: 'summary'
     };
-
-    this.viewSummary = this.viewSummary.bind(this);
-    this.viewDates = this.viewDates.bind(this);
   }
 
   static getInitialProps = function() {
     return {};
   };
 
-  viewSummary(event) {
-    //TODO Call Axios
-    event.preventDefault();
-    console.log(event.currentTarget.value);
-    this.setState({
-      currentView: 'summary'
-    });
+  viewSummary = event => {
+      //TODO Call Axios
+      event.preventDefault();
+      console.log(event.currentTarget.value);
+      this.setState({
+        currentView: 'summary'
+      });
   }
 
-  viewDates(event) {
+  viewDates = event => {
     //TODO Call Axios
     event.preventDefault();
     console.log(event.currentTarget.value);
@@ -46,17 +45,23 @@ class Index extends Component {
     let { currentView } = this.state;
     return (
       <MainLayout>
-        <Content style={{ padding: '0 50px', marginTop: 32 }}>
+        <Content className="main-content">
           <MainHeader title="DRF Header Prop" />
-          <Button shape="round" onClick={this.viewSummary} value="summary">
-            Summary
-          </Button>
-          <Button shape="round" onClick={this.viewDates} value="dates">
-            Dates
-          </Button>
+          <Row gutter={16}>
+            <Col className="gutter-row" span={2} >
+              <Button shape="round" onClick={this.viewSummary} value="summary">
+                Summary
+              </Button>
+            </Col>
+            <Col className="gutter-row" span={2} >
+              <Button shape="round" onClick={this.viewDates} value="dates">
+                Dates
+              </Button>
+            </Col>
+          </Row>
           <Divider />
         </Content>
-        <div>{currentView === 'summary' ? <h1>in summary</h1> : <DatesChart />}</div>
+        <div>{currentView === 'summary' ? <SummaryPage /> : <DatesChart />}</div>
       </MainLayout>
     );
   }
