@@ -1,8 +1,19 @@
 import 'antd/dist/antd.css';
 import { Button, Layout, Divider } from 'antd';
 import { Bar } from 'react-chartjs-2';
+import gql from 'graphql-tag';
+import { compose, graphql, Query } from 'react-apollo';
 
 const { Content } = Layout;
+
+const GET_TICKETS = gql`
+  query {
+    Ticket {
+      id
+      summary
+    }
+  }
+`;
 
 const DatesChart = props => {
   const testData = {
@@ -37,10 +48,31 @@ const DatesChart = props => {
   };
 
   return (
-    <Content>
-      <Bar data={testData} />
-    </Content>
+    <Query query={GET_TICKETS}>
+      {({ loading, error, data }) => {
+        if (loading) return <div>loading...</div>;
+        if (error) return <div>error...</div>;
+        return (
+          <Content>
+            <Bar data={testData} />
+          </Content>
+        );
+      }}
+    </Query>
   );
 };
 
+// DatesChart.getInitialProps = async function({ query }) {
+//   console.log('getinitprops', query);
+//   return {
+//     id: query.id
+//   };
+// };
+
+// export default graphql(gql`
+//   query ticket {
+//     id
+//     summary
+//   }
+// `)(DatesChart);
 export default DatesChart;

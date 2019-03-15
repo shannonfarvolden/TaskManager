@@ -44,7 +44,22 @@ class Index extends Component {
       <MainLayout>
         <Content className="main-content">
           <MainHeader title="DRF Header Prop" />
+<<<<<<< HEAD
           <Pills viewDates={this.viewDates} viewSummary={this.viewSummary} />
+=======
+          <Row gutter={16}>
+            <Col className="gutter-row" span={2}>
+              <Button shape="round" onClick={this.viewSummary} value="summary">
+                Summary
+              </Button>
+            </Col>
+            <Col className="gutter-row" span={2}>
+              <Button shape="round" onClick={this.viewDates} value="dates">
+                Dates
+              </Button>
+            </Col>
+          </Row>
+>>>>>>> WIP: apolloClient setup
           <Divider />
         </Content>
         {currentView === 'summary' ? <SummaryPage /> : <DatesChart />}
