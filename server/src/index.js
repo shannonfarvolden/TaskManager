@@ -3,12 +3,15 @@ const { ApolloServer, gql } = require("apollo-server-express");
 const app = express();
 const MetisAPI = require("./datasources/metis");
 const { connectDB } = require("./utils/db");
+const cors = require("cors");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
 
 const start = async () => {
   const db = await connectDB();
+
+  app.use(cors());
 
   const typeDefs = gql`
     type Query {
@@ -37,7 +40,7 @@ const start = async () => {
     dataSources
   });
 
-  server.applyMiddleware({ app, path: "/graphql" });
+  server.applyMiddleware({ app, path: "/" });
   app.listen(3000, function() {
     console.log(`Listening on port ${PORT}`);
   });
