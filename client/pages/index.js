@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import { Button, Layout, Divider, Row, Col } from 'antd';
+import { Layout, Divider } from 'antd';
 import axios from 'axios';
 import fetch from 'isomorphic-unfetch';
-import MainLayout from '../components/MainLayout.js';
-import MainHeader from '../components/MainHeader.js';
-import DatesChart from '../components/DatesChart.js';
-import SummaryPage from '../components/SummaryPage';
+import { MainLayout, MainHeader, DatesChart, SummaryPage, Pills } from '../components';
 import '../components/styles/index.css';
 
 const { Content } = Layout;
@@ -24,13 +21,13 @@ class Index extends Component {
   };
 
   viewSummary = event => {
-      //TODO Call Axios
-      event.preventDefault();
-      console.log(event.currentTarget.value);
-      this.setState({
-        currentView: 'summary'
-      });
-  }
+    //TODO Call Axios
+    event.preventDefault();
+    console.log(event.currentTarget.value);
+    this.setState({
+      currentView: 'summary'
+    });
+  };
 
   viewDates = event => {
     //TODO Call Axios
@@ -39,7 +36,7 @@ class Index extends Component {
     this.setState({
       currentView: 'dates'
     });
-  }
+  };
 
   render() {
     let { currentView } = this.state;
@@ -47,21 +44,10 @@ class Index extends Component {
       <MainLayout>
         <Content className="main-content">
           <MainHeader title="DRF Header Prop" />
-          <Row gutter={16}>
-            <Col className="gutter-row" span={2} >
-              <Button shape="round" onClick={this.viewSummary} value="summary">
-                Summary
-              </Button>
-            </Col>
-            <Col className="gutter-row" span={2} >
-              <Button shape="round" onClick={this.viewDates} value="dates">
-                Dates
-              </Button>
-            </Col>
-          </Row>
+          <Pills viewDates={this.viewDates} viewSummary={viewSummary} />
           <Divider />
         </Content>
-        <div>{currentView === 'summary' ? <SummaryPage /> : <DatesChart />}</div>
+        {currentView === 'summary' ? <SummaryPage /> : <DatesChart />}
       </MainLayout>
     );
   }

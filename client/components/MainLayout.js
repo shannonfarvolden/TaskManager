@@ -1,5 +1,5 @@
+import React from 'react';
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
-
 import MainHeader from './MainHeader';
 
 const { Header, Content, Footer, Sider } = Layout;
