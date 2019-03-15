@@ -44,7 +44,7 @@ class Index extends Component {
       <MainLayout>
         <Content className="main-content">
           <MainHeader title="DRF Header Prop" />
-          <Pills viewDates={this.viewDates} viewSummary={viewSummary} />
+          <Pills viewDates={this.viewDates} viewSummary={this.viewSummary} />
           <Divider />
         </Content>
         {currentView === 'summary' ? <SummaryPage /> : <DatesChart />}
