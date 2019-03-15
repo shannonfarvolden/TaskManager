@@ -1,11 +1,12 @@
 import { Layout } from 'antd';
 const { Content } = Layout;
-import SearchAreaTwo from './SearchAreaTwo';
+import SearchArea from './SearchArea';
+import SearchResult from './SearchResult';
 
 const SummaryPage = () => (
   <Content>
-    <SearchAreaTwo />
-    <h1>Search Result</h1>
+    <SearchArea />
+    <SearchResult />
   </Content>
 );
 
