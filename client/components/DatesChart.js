@@ -8,7 +8,7 @@ const { Content } = Layout;
 
 const GET_TICKETS = gql`
   query {
-    Ticket {
+    tickets {
       id
       summary
     }
@@ -52,6 +52,7 @@ const DatesChart = props => {
       {({ loading, error, data }) => {
         if (loading) return <div>loading...</div>;
         if (error) return <div>error...</div>;
+        console.log(data);
         return (
           <Content>
             <Bar data={testData} />
