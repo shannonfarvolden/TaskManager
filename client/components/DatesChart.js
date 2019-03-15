@@ -9,8 +9,11 @@ const { Content } = Layout;
 const GET_TICKETS = gql`
   query {
     tickets {
-      id
-      summary
+      baanalysis_end_date
+      dev_end_date
+      dev_planned_date
+      production_planned_date
+      production_target_date
     }
   }
 `;
@@ -33,13 +36,13 @@ const DatesChart = props => {
     ],
     datasets: [
       {
-        label: 'test1',
+        label: 'dev',
         data: [22, 19, 27, 23, 22, 24, 17, 25, 23, 24, 20, 19],
         fill: false, // Don't fill area under the line
         borderColor: 'green' // Line color
       },
       {
-        label: 'test2',
+        label: 'ba',
         data: [31, 11, 23, 21, 40, 43, 32, 11, 43, 54, 34, 23],
         fill: false, // Don't fill area under the line
         borderColor: 'red' // Line color
@@ -52,6 +55,7 @@ const DatesChart = props => {
       {({ loading, error, data }) => {
         if (loading) return <div>loading...</div>;
         if (error) return <div>error...</div>;
+        console.log(data);
         return (
           <Content>
             <Bar data={testData} />

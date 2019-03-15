@@ -3,7 +3,14 @@ import 'antd/dist/antd.css';
 import { Layout, Divider } from 'antd';
 import axios from 'axios';
 import fetch from 'isomorphic-unfetch';
-import { MainLayout, MainHeader, DatesChart, SummaryPage, Pills } from '../components';
+import {
+  MainLayout,
+  MainHeader,
+  DatesChart,
+  SummaryPage,
+  Pills,
+  HighChartDates
+} from '../components';
 import '../components/styles/index.css';
 
 const { Content } = Layout;
@@ -47,7 +54,7 @@ class Index extends Component {
           <Pills viewDates={this.viewDates} viewSummary={this.viewSummary} />
           <Divider />
         </Content>
-        {currentView === 'summary' ? <SummaryPage /> : <DatesChart />}
+        {currentView === 'summary' ? <SummaryPage /> : <HighChartDates />}
       </MainLayout>
     );
   }
