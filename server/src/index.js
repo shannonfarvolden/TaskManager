@@ -40,7 +40,7 @@ const start = async () => {
     dataSources
   });
 
-  server.applyMiddleware({ app, path: "/graphql" });
+  server.applyMiddleware({ app, path: "/" });
   app.listen(3000, function() {
     console.log(`Listening on port ${PORT}`);
   });
