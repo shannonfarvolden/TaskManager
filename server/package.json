@@ -4,16 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -e js -x node --inspect src/index.js"
+    "dev": "nodemon --exec ./node_modules/.bin/babel-node -- ./src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-datasource": "^0.3.1",
     "apollo-server-express": "^2.4.8",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-add-module-exports": "^1.0.0",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "graphql": "^14.1.1",
+    "mssql": "^5.0.3",
     "nodemon": "^1.18.9"
   },
   "babel": {
