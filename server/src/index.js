@@ -28,7 +28,7 @@ const start = async () => {
   });
 
   server.applyMiddleware({ app, path: "/" });
-  app.listen(3000, function() {
+  app.listen(PORT, function() {
     console.log(`Listening on port ${PORT}`);
   });
 };
