@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
 import MainHeader from './MainHeader';
+import '../components/styles/mainLayout.css';
 
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -16,16 +17,24 @@ class SiderNav extends React.Component {
   };
 
   render() {
+    const { collapsed } = this.state;
     return (
       <Layout style={{ minHeight: '100vh' }}>
-        <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
+        <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+            <div className="brand">
+              <span className="brand-drf">DRF</span> <span style={{ display: collapsed ? 'none' : 'inline-block' }}>TRACKER</span>
+            </div>
             <Menu.Item key="1">
-              <Icon type="pie-chart" />
-              <span>DRF Tracker</span>
+              <Icon type="table" />
+              <span>Summary</span>
             </Menu.Item>
             <Menu.Item key="2">
+              <Icon type="pie-chart" />
+              <span>Dates</span>
+            </Menu.Item>
+            <Menu.Item key="3">
               <Icon type="desktop" />
               <span>Resource Tracker</span>
             </Menu.Item>
@@ -38,9 +47,9 @@ class SiderNav extends React.Component {
                 </span>
               }
             >
-              <Menu.Item key="3">Tom</Menu.Item>
-              <Menu.Item key="4">Bill</Menu.Item>
-              <Menu.Item key="5">Alex</Menu.Item>
+              <Menu.Item key="4">Tom</Menu.Item>
+              <Menu.Item key="5">Bill</Menu.Item>
+              <Menu.Item key="6">Alex</Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub2"
@@ -51,7 +60,7 @@ class SiderNav extends React.Component {
                 </span>
               }
             >
-              <Menu.Item key="6">Team 1</Menu.Item>
+              <Menu.Item key="7">Team 1</Menu.Item>
               <Menu.Item key="8">Team 2</Menu.Item>
             </SubMenu>
             <Menu.Item key="9">
