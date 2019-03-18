@@ -4,9 +4,6 @@ import {
 const { Option } = Select;
 
 class SearchAreaComponent extends React.Component {
-  state = {
-    expand: false,
-  };
 
   getTextSearchFields() {
     const { getFieldDecorator } = this.props.form;
@@ -77,10 +74,6 @@ class SearchAreaComponent extends React.Component {
     this.props.form.resetFields();
   }
 
-  toggle = () => {
-    const { expand } = this.state;
-    this.setState({ expand: !expand });
-  }
 
   render() {
     return (
