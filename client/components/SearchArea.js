@@ -16,31 +16,36 @@ class SearchAreaComponent extends React.Component {
       <Col span={4} key={fieldName}>
         <Form.Item label={fieldName}>
           {getFieldDecorator(fieldName, {
-              rules: [{
-                message: 'Input something!',
-              }],
-            })(
-              <Input placeholder={fieldName} size='large' />
-            )}
+            rules: [{
+              message: 'Input something!',
+            }],
+          })(
+            <Input placeholder={fieldName} size='large' />
+          )}
         </Form.Item>
       </Col>
     ));
   }
 
   getDropdownFields() {
+    const { getFieldDecorator } = this.props.form;
     const fieldName = "Dedicated?";
     const fieldOptions = ['Yes', 'No'].map(option => (
       <Option value={option} key={option}>{option}</Option>
     ));
 
     return (
-      <Col span={4}>
-      <Form.Item label={fieldName}>
-        <Select style={{ width: 200 }} size="large" placeholder={fieldName} >
-          {fieldOptions}
-        </Select>
-      </Form.Item>
-    </Col>
+      <Col span={4} key={fieldName}>
+        <Form.Item label={fieldName}>
+          {getFieldDecorator(fieldName, {
+            valuePropName: 'value',
+          })(
+            <Select size="large" placeholder={fieldName} >
+              {fieldOptions}
+            </Select>
+          )}
+        </Form.Item>
+      </Col>
     );
   }
 
@@ -52,11 +57,10 @@ class SearchAreaComponent extends React.Component {
       <Col span={4} key={fieldName}>
         <Form.Item>
           {getFieldDecorator(fieldName, {
-              valuePropName: "unchecked",
-              initialValue: true
-            })(
-              <Checkbox size='large'>{fieldName}</Checkbox>
-            )}
+            valuePropName: "checked",
+          })(
+            <Checkbox size='large'>{fieldName}</Checkbox>
+          )}
         </Form.Item>
       </Col>
     ));
