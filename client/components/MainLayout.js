@@ -1,9 +1,8 @@
 import React from 'react';
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
-import MainHeader from './MainHeader';
+import { Layout, Menu, Icon } from 'antd';
 import '../components/styles/mainLayout.css';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
 class SiderNav extends React.Component {
@@ -18,6 +17,7 @@ class SiderNav extends React.Component {
 
   render() {
     const { collapsed } = this.state;
+    const { handleMenuSelection } = this.props;
     return (
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
@@ -26,11 +26,11 @@ class SiderNav extends React.Component {
             <div className="brand">
               <span className="brand-drf">DRF</span> <span style={{ display: collapsed ? 'none' : 'inline-block' }}>TRACKER</span>
             </div>
-            <Menu.Item key="1">
+            <Menu.Item key="1" onClick={handleMenuSelection}>
               <Icon type="table" />
               <span>Summary</span>
             </Menu.Item>
-            <Menu.Item key="2">
+            <Menu.Item key="2" onClick={handleMenuSelection}>
               <Icon type="pie-chart" />
               <span>Dates</span>
             </Menu.Item>
