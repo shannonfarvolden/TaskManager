@@ -38,10 +38,18 @@ class Index extends Component {
     });
   };
 
+  getMenu = props => {
+    const index = parseInt(props.key) - 1;
+    const menuList = ['summary', 'dates'];
+    this.setState({
+      currentView: menuList[index]
+    })
+  }
+
   render() {
     let { currentView } = this.state;
     return (
-      <MainLayout>
+      <MainLayout handleMenuSelection={this.getMenu}>
         <Content className="main-content">
           <MainHeader title="DRF Header Prop" />
           <Pills viewDates={this.viewDates} viewSummary={this.viewSummary} />
