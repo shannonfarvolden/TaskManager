@@ -1,6 +1,5 @@
 import React from 'react';
 import { Layout, Menu, Icon } from 'antd';
-import '../components/styles/mainLayout.css';
 import Brand from './Brand';
 
 const { Content, Sider } = Layout;
@@ -22,7 +21,6 @@ class SiderNav extends React.Component {
     return (
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
-          <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Brand collapsed={collapsed} />
             <Menu.Item key="1" onClick={handleMenuSelection}>
