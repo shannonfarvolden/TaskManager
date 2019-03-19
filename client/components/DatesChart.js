@@ -5,35 +5,25 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 const { Content } = Layout;
+const moment = require('moment');
 
 const GET_TICKETS = gql`
   query {
     tickets {
-      id
-      summary
+      dev_planned_date
+      ba_unit_testing_planned_date
+      baanalysis_end_date
+      dev_end_date
     }
   }
 `;
-
-const DatesChart = props => {
-  const testData = {
-    labels: [
-      '10/04/2018',
-      '10/05/2018',
-      '10/06/2018',
-      '10/07/2018',
-      '10/08/2018',
-      '10/09/2018',
-      '10/10/2018',
-      '10/11/2018',
-      '10/12/2018',
-      '10/13/2018',
-      '10/14/2018',
-      '10/15/2018'
-    ],
+function getDataSource(tickets, month) {
+  //Todo: need to loop throug
+  const dataSource = {
+    labels: [...Array(moment(month, 'YYYY-MM').daysInMonth() + 1).keys()].slice(1),
     datasets: [
       {
-        label: 'test1',
+        label: 'Specs Due',
         data: [22, 19, 27, 23, 22, 24, 17, 25, 23, 24, 20, 19],
         fill: false, // Don't fill area under the line
         borderColor: 'green' // Line color
@@ -46,15 +36,23 @@ const DatesChart = props => {
       }
     ]
   };
+  return dataSource;
+}
 
+const DatesChart = props => {
   return (
     <Query query={GET_TICKETS}>
       {({ loading, error, data }) => {
         if (loading) return <div>loading...</div>;
         if (error) return <div>error...</div>;
+        let month = '2019-03';
+        let dataSource = {};
+        if (data) {
+          dataSource = getDataSource(data.tickets, month);
+        }
         return (
           <Content>
-            <Bar data={testData} />
+            <Bar data={dataSource} />
           </Content>
         );
       }}
