@@ -9,7 +9,7 @@ const { Content } = Layout;
 const GET_TICKETS = gql`
   query {
     tickets {
-      id
+      remedy_short_id
       summary
     }
   }
