@@ -1,10 +1,18 @@
 import 'antd/dist/antd.css';
-import { Button, Layout, Divider } from 'antd';
+import { Icon, Layout } from 'antd';
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 const MainHeader = props => (
-  <Content>
-    <h1>{props.title}</h1>
+  <Content className="main-header">
+    <h1>
+      <span className="header-title">
+        {props.title}
+      </span>
+      <Icon type="right-circle" className="circle-right" spin/>
+      <span className="header-current-view">
+        {props.currentView}
+      </span>
+    </h1>
   </Content>
 );
 

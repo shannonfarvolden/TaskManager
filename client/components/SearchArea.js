@@ -10,7 +10,7 @@ class SearchAreaComponent extends React.Component {
     const textSearchFields = ['Release ID', 'DM', 'PM', 'BA', 'DEV'];
 
     return textSearchFields.map(fieldName => (
-      <Col span={4} key={fieldName}>
+      <Col sm={8} md={6} lg={4} key={fieldName}>
         <Form.Item label={fieldName}>
           {getFieldDecorator(fieldName, {
             rules: [{
@@ -32,7 +32,7 @@ class SearchAreaComponent extends React.Component {
     ));
 
     return (
-      <Col span={4} key={fieldName}>
+      <Col sm={8} md={6} lg={4} key={fieldName}>
         <Form.Item label={fieldName}>
           {getFieldDecorator(fieldName, {
             valuePropName: 'value',
@@ -51,7 +51,7 @@ class SearchAreaComponent extends React.Component {
     const checkboxFields = ['Include BA-Test', 'Include QA-Test', 'Include DMRs'];
 
     return checkboxFields.map(fieldName => (
-      <Col span={4} key={fieldName}>
+      <Col sm={8} md={6} lg={4} key={fieldName}>
         <Form.Item>
           {getFieldDecorator(fieldName, {
             valuePropName: "checked",
