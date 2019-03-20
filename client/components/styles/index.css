@@ -36,3 +36,10 @@
 .main-header .circle-right {
   font-size: 1.2rem;
 }
+
+/* SummaryTable */
+
+.clear-btn {
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}

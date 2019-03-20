@@ -1,6 +1,8 @@
-import { Table } from 'antd';
+import { Table, Input, Button, Icon, } from 'antd';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
+import Highlighter from 'react-highlight-words';
+import { getDataSource } from './utilities/summaryTable.helper';
 
 const GET_COLUMNS = gql`
   query {
@@ -27,152 +29,200 @@ const GET_COLUMNS = gql`
   }
 `;
 
-const columns = [
-  {
-    title: 'Remedy Ticket',
-    dataIndex: 'remedy_short_id',
-    sorter: (a, b) => a.remedy_short_id - b.remedy_short_id,
-    sortDirections: ['descend', 'ascend']
-  },
-  {
-    title: 'PM',
-    dataIndex: 'product_manager',
-    width: 500
-  },
-  {
-    title: 'BA',
-    dataIndex: 'business_analyst_lead',
-    width: 50
-  },
-  {
-    title: 'Dev',
-    dataIndex: 'development_lead',
-    width: 50
-  },
-  {
-    title: 'QA',
-    dataIndex: 'qa_lead'
-  },
-  {
-    title: 'Status',
-    dataIndex: 'phase'
-  },
-  {
-    title: 'BRD Due Date',
-    dataIndex: 'brd_planned_date'
-  },
-  {
-    title: 'FRD Due Date',
-    dataIndex: 'frd_planned_date'
-  },
-  {
-    title: 'Dev Due Date',
-    dataIndex: 'dev_planned_date'
-  },
-  {
-    title: 'BAT Due Date',
-    dataIndex: 'ba_unit_testing_planned_date'
-  },
-  {
-    title: 'QAT Due Date',
-    dataIndex: 'qa_test_completion_planned_date'
-  },
-  {
-    title: 'Issue',
-    dataIndex: 'summary'
-  },
-  {
-    title: 'Dev Estimate',
-    dataIndex: 'dev_estimate'
-  },
-  {
-    title: 'BA Estimate',
-    dataIndex: 'ba_estimate'
-  },
-  {
-    title: 'QA Estimate',
-    dataIndex: 'qa_estimate'
-  },
-  {
-    title: 'Release ID',
-    dataIndex: 'delivery_release_id'
-  },
-  {
-    title: 'Subcategory',
-    dataIndex: 'product_type'
-  },
-  {
-    title: 'Product',
-    dataIndex: 'parent_product'
-  }
-];
+class SummaryTable extends React.Component {
+  state = {
+    searchText: '',
+  };
 
-function removeEmailDomain(emails) {
-  if (!emails) return;
-  const emailArr = emails.split(',');
-  let nameOnlyArr = [];
-  emailArr.forEach(email => {
-    email.lastIndexOf('@') >= 0
-      ? nameOnlyArr.push(email.substring(0, email.lastIndexOf('@')))
-      : nameOnlyArr.push(email);
-  });
+  getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys, selectedKeys, confirm, clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={node => { this.searchInput = node; }}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Button
+          type="primary"
+          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          icon="search"
+          size="small"
+          style={{ width: 90, marginRight: 8 }}
+        >
+          Search
+        </Button>
+        <Button
+          onClick={() => this.handleReset(clearFilters)}
+          size="small"
+          style={{ width: 90 }}
+        >
+          Reset
+        </Button>
+      </div>
+    ),
+    filterIcon: filtered => <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />,
+    onFilter: (value, record) => {
+      if (!!record[dataIndex]) {
+        return record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes(value.toLowerCase())
+      }
+    },
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select());
+      }
+    },
+    render: (text) => (
+      <Highlighter
+        highlightStyle={{ backgroundColor: '#1890FF', color: 'white', padding: 0 }}
+        searchWords={[this.state.searchText]}
+        autoEscape
+        textToHighlight={(text || '').toString()}
+      />
+    ),
+  })
 
-  return nameOnlyArr.join();
-}
-
-function formatDate(dateObj) {
-  if (dateObj) {
-    let date = new Date(dateObj);
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    let year = date.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
+  handleSearch = (selectedKeys, confirm) => {
+    confirm();
+    this.setState({ searchText: selectedKeys[0] });
   }
 
-  return null;
-}
+  handleReset = (clearFilters) => {
+    clearFilters();
+    this.setState({ searchText: '' });
+  }
 
-function getDataSource(tickets) {
-  let dataSource = [];
-  tickets.forEach((ticket, index) => {
-    ticket.product_manager = removeEmailDomain(ticket.product_manager);
-    ticket.business_analyst_lead = removeEmailDomain(ticket.business_analyst_lead);
-    ticket.development_lead = removeEmailDomain(ticket.development_lead);
-    ticket.qa_lead = removeEmailDomain(ticket.qa_lead);
-    ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
-    ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
-    ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
-    ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
-    ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
-    let tableRow = { key: index };
-    tableRow = { ...tableRow, ...ticket };
-    dataSource.push(tableRow);
-  });
-  return dataSource;
-}
-const SummaryTable = () => {
-  return (
-    <Query query={GET_COLUMNS}>
-      {({ loading, error, data }) => {
-        let dataSource = [{}];
-        if (data) {
-          dataSource = getDataSource(data.tickets);
-        }
+  render() {
+    const columns = [
+      {
+        title: 'Remedy Ticket',
+        dataIndex: 'remedy_short_id',
+        sorter: (a, b) => a.remedy_short_id - b.remedy_short_id,
+        sortDirections: ['descend', 'ascend'],
+        ...this.getColumnSearchProps('remedy_short_id'),
+      },
+      {
+        title: 'PM',
+        dataIndex: 'product_manager',
+        width: 500,
+        ...this.getColumnSearchProps('product_manager'),
+      },
+      {
+        title: 'BA',
+        dataIndex: 'business_analyst_lead',
+        width: 50,
+        ...this.getColumnSearchProps('business_analyst_lead'),
+      },
+      {
+        title: 'Dev',
+        dataIndex: 'development_lead',
+        width: 50,
+        ...this.getColumnSearchProps('development_lead'),
+      },
+      {
+        title: 'QA',
+        dataIndex: 'qa_lead',
+        ...this.getColumnSearchProps('qa_lead'),
+      },
+      {
+        title: 'Status',
+        dataIndex: 'phase',
+        ...this.getColumnSearchProps('phase'),
+      },
+      {
+        title: 'BRD Due Date',
+        dataIndex: 'brd_planned_date',
+        ...this.getColumnSearchProps('brd_planned_date'),
+      },
+      {
+        title: 'FRD Due Date',
+        dataIndex: 'frd_planned_date',
+        ...this.getColumnSearchProps('frd_planned_date'),
+      },
+      {
+        title: 'Dev Due Date',
+        dataIndex: 'dev_planned_date',
+        ...this.getColumnSearchProps('dev_planned_date'),
+      },
+      {
+        title: 'BAT Due Date',
+        dataIndex: 'ba_unit_testing_planned_date',
+        ...this.getColumnSearchProps('ba_unit_testing_planned_date'),
+      },
+      {
+        title: 'QAT Due Date',
+        dataIndex: 'qa_test_completion_planned_date',
+        ...this.getColumnSearchProps('qa_test_completion_planned_date'),
+      },
+      {
+        title: 'Issue',
+        dataIndex: 'summary',
+        ...this.getColumnSearchProps('summary'),
+      },
+      {
+        title: 'Dev Estimate',
+        dataIndex: 'dev_estimate',
+        ...this.getColumnSearchProps('dev_estimate'),
+      },
+      {
+        title: 'BA Estimate',
+        dataIndex: 'ba_estimate',
+        ...this.getColumnSearchProps('ba_estimate'),
+      },
+      {
+        title: 'QA Estimate',
+        dataIndex: 'qa_estimate',
+        ...this.getColumnSearchProps('qa_estimate'),
+      },
+      {
+        title: 'Release ID',
+        dataIndex: 'delivery_release_id',
+        ...this.getColumnSearchProps('delivery_release_id'),
+      },
+      {
+        title: 'Subcategory',
+        dataIndex: 'product_type',
+        ...this.getColumnSearchProps('product_type'),
+      },
+      {
+        title: 'Product',
+        dataIndex: 'parent_product',
+        ...this.getColumnSearchProps('parent_product'),
+      }
+    ];
 
-        if (loading) return <div>loading...</div>;
-        if (error) return <div>error...</div>;
-        return (
-          <div>
-            <Table columns={columns} dataSource={dataSource} size="middle" />,
-          </div>
-        );
-      }}
-    </Query>
-  );
-};
+    return (
+      <Query query={GET_COLUMNS}>
+        {({ loading, error, data }) => {
+          let dataSource = [{}];
+          if (data) {
+            dataSource = getDataSource(data.tickets);
+          }
+
+          if (loading) return <div>loading...</div>;
+          if (error) return <div>error...</div>;
+          return (
+            <div style={{ paddingTop: 20 }}>
+              <Button icon="delete" className="clear-btn" disabled>
+                Clear Search
+              </Button>
+              <Table columns={columns} dataSource={dataSource} size="middle" />,
+            </div>
+          );
+        }}
+      </Query>
+    );
+  }
+
+
+
+}
 
 export default SummaryTable;
