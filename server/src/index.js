@@ -10,7 +10,7 @@ import resolvers from "./resolvers";
 
 require("dotenv").config();
 
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 3000;
 
 const start = async () => {
   const db = await connectDB();
