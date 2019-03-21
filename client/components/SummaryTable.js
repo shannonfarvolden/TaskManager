@@ -104,6 +104,7 @@ class SummaryTable extends React.Component {
       {
         title: 'Remedy Ticket',
         dataIndex: 'remedy_short_id',
+        width: 180,
         sorter: (a, b) => a.remedy_short_id - b.remedy_short_id,
         sortDirections: ['descend', 'ascend'],
         ...this.getColumnSearchProps('remedy_short_id'),
@@ -111,55 +112,56 @@ class SummaryTable extends React.Component {
       {
         title: 'PM',
         dataIndex: 'product_manager',
-        width: 500,
+        width: 200,
         ...this.getColumnSearchProps('product_manager'),
       },
       {
         title: 'BA',
         dataIndex: 'business_analyst_lead',
-        width: 50,
+        width: 200,
         ...this.getColumnSearchProps('business_analyst_lead'),
       },
       {
         title: 'Dev',
         dataIndex: 'development_lead',
-        width: 50,
+        width: 200,
         ...this.getColumnSearchProps('development_lead'),
       },
       {
         title: 'QA',
         dataIndex: 'qa_lead',
+        width: 200,
         ...this.getColumnSearchProps('qa_lead'),
       },
       {
         title: 'Status',
         dataIndex: 'phase',
+        width: 180,
         ...this.getColumnSearchProps('phase'),
       },
       {
-        title: 'BRD Due Date',
-        dataIndex: 'brd_planned_date',
-        ...this.getColumnSearchProps('brd_planned_date'),
-      },
-      {
-        title: 'FRD Due Date',
-        dataIndex: 'frd_planned_date',
-        ...this.getColumnSearchProps('frd_planned_date'),
-      },
-      {
-        title: 'Dev Due Date',
-        dataIndex: 'dev_planned_date',
-        ...this.getColumnSearchProps('dev_planned_date'),
-      },
-      {
-        title: 'BAT Due Date',
-        dataIndex: 'ba_unit_testing_planned_date',
-        ...this.getColumnSearchProps('ba_unit_testing_planned_date'),
-      },
-      {
-        title: 'QAT Due Date',
-        dataIndex: 'qa_test_completion_planned_date',
-        ...this.getColumnSearchProps('qa_test_completion_planned_date'),
+        title: 'Due Date',
+        children: [{
+          title: 'BRD',
+          dataIndex: 'brd_planned_date',
+          ...this.getColumnSearchProps('brd_planned_date'),
+        }, {
+          title: 'FRD',
+          dataIndex: 'frd_planned_date',
+          ...this.getColumnSearchProps('frd_planned_date'),
+        }, {
+          title: 'Dev',
+          dataIndex: 'dev_planned_date',
+          ...this.getColumnSearchProps('dev_planned_date'),
+        }, {
+          title: 'BAT',
+          dataIndex: 'ba_unit_testing_planned_date',
+          ...this.getColumnSearchProps('ba_unit_testing_planned_date'),
+        }, {
+          title: 'QAT',
+          dataIndex: 'qa_test_completion_planned_date',
+          ...this.getColumnSearchProps('qa_test_completion_planned_date'),
+        }]
       },
       {
         title: 'Issue',
@@ -167,19 +169,20 @@ class SummaryTable extends React.Component {
         ...this.getColumnSearchProps('summary'),
       },
       {
-        title: 'Dev Estimate',
-        dataIndex: 'dev_estimate',
-        ...this.getColumnSearchProps('dev_estimate'),
-      },
-      {
-        title: 'BA Estimate',
-        dataIndex: 'ba_estimate',
-        ...this.getColumnSearchProps('ba_estimate'),
-      },
-      {
-        title: 'QA Estimate',
-        dataIndex: 'qa_estimate',
-        ...this.getColumnSearchProps('qa_estimate'),
+        title: 'Estimate',
+        children: [{
+          title: 'Dev',
+          dataIndex: 'dev_estimate',
+          ...this.getColumnSearchProps('dev_estimate'),
+        }, {
+          title: 'BA',
+          dataIndex: 'ba_estimate',
+          ...this.getColumnSearchProps('ba_estimate'),
+        }, {
+          title: 'QA',
+          dataIndex: 'qa_estimate',
+          ...this.getColumnSearchProps('qa_estimate'),
+        }]
       },
       {
         title: 'Release ID',
@@ -209,11 +212,12 @@ class SummaryTable extends React.Component {
           if (loading) return <div>loading...</div>;
           if (error) return <div>error...</div>;
           return (
-            <div style={{ paddingTop: 20 }}>
-              <Button icon="delete" className="clear-btn" disabled>
+            <div className="summary-table-container">
+              <Button className="clear-btn" onClick={this.handleReset} disabled>
+                <Icon type="delete" />
                 Clear Search
               </Button>
-              <Table columns={columns} dataSource={dataSource} size="middle" />,
+              <Table columns={columns} dataSource={dataSource} pagination={{ position: 'both' }} size="middle" />,
             </div>
           );
         }}

@@ -39,7 +39,16 @@
 
 /* SummaryTable */
 
+.summary-table-container {
+  padding-top: 20px;
+  overflow: auto;
+}
+
 .clear-btn {
   margin-bottom: 10px;
   letter-spacing: 1px;
+}
+
+td span {
+  color: #333;
 }
