@@ -42,6 +42,7 @@
 .summary-table-container {
   padding-top: 20px;
   overflow: auto;
+  max-height: 90vh;
 }
 
 .clear-btn {
@@ -51,4 +52,28 @@
 
 td span {
   color: #333;
+}
+
+.loading-summary-table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.loading-summary-table h2 {
+  letter-spacing: 1.5px;
+  color: #1890ff;
+}
+
+.loading-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.loading-error h2 {
+  color: maroon;
+  letter-spacing: 2px;
 }

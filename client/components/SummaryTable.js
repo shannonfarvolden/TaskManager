@@ -1,33 +1,10 @@
-import { Table, Input, Button, Icon, } from 'antd';
-import gql from 'graphql-tag';
+import { Table, Input, Button, Icon, Spin } from 'antd';
 import { Query } from 'react-apollo';
 import Highlighter from 'react-highlight-words';
-import { getDataSource } from './utilities/summaryTable.helper';
-
-const GET_COLUMNS = gql`
-  query {
-    tickets {
-      remedy_short_id
-      product_manager
-      business_analyst_lead
-      development_lead
-      qa_lead
-      phase
-      brd_planned_date
-      frd_planned_date
-      dev_planned_date
-      ba_unit_testing_planned_date
-      qa_test_completion_planned_date
-      summary
-      dev_estimate
-      ba_estimate
-      qa_estimate
-      delivery_release_id
-      product_type
-      parent_product
-    }
-  }
-`;
+import {
+  getDataSource, dateSorter, estimateSorter,
+} from './utilities/summaryTable.helper';
+import GET_COLUMNS from './queries/getColumns';
 
 class SummaryTable extends React.Component {
   state = {
@@ -144,28 +121,39 @@ class SummaryTable extends React.Component {
         children: [{
           title: 'BRD',
           dataIndex: 'brd_planned_date',
+          sorter: dateSorter('brd_planned_date'),
+          sortDirections: ['descend', 'ascend'],
           ...this.getColumnSearchProps('brd_planned_date'),
         }, {
           title: 'FRD',
           dataIndex: 'frd_planned_date',
+          sorter: dateSorter('frd_planned_date'),
+          sortDirections: ['descend', 'ascend'],
           ...this.getColumnSearchProps('frd_planned_date'),
         }, {
           title: 'Dev',
           dataIndex: 'dev_planned_date',
+          sorter: dateSorter('dev_planned_date'),
+          sortDirections: ['descend', 'ascend'],
           ...this.getColumnSearchProps('dev_planned_date'),
         }, {
           title: 'BAT',
           dataIndex: 'ba_unit_testing_planned_date',
+          sorter: dateSorter('ba_unit_testing_planned_date'),
+          sortDirections: ['descend', 'ascend'],
           ...this.getColumnSearchProps('ba_unit_testing_planned_date'),
         }, {
           title: 'QAT',
           dataIndex: 'qa_test_completion_planned_date',
+          sorter: dateSorter('qa_test_completion_planned_date'),
+          sortDirections: ['descend', 'ascend'],
           ...this.getColumnSearchProps('qa_test_completion_planned_date'),
         }]
       },
       {
         title: 'Issue',
         dataIndex: 'summary',
+        width: 200,
         ...this.getColumnSearchProps('summary'),
       },
       {
@@ -173,14 +161,20 @@ class SummaryTable extends React.Component {
         children: [{
           title: 'Dev',
           dataIndex: 'dev_estimate',
+          sorter: estimateSorter('dev_estimate'),
+          sortDirections: ['descend', 'ascend'],
           ...this.getColumnSearchProps('dev_estimate'),
         }, {
           title: 'BA',
           dataIndex: 'ba_estimate',
+          sorter: estimateSorter('ba_estimate'),
+          sortDirections: ['descend', 'ascend'],
           ...this.getColumnSearchProps('ba_estimate'),
         }, {
           title: 'QA',
           dataIndex: 'qa_estimate',
+          sorter: estimateSorter('qa_estimate'),
+          sortDirections: ['descend', 'ascend'],
           ...this.getColumnSearchProps('qa_estimate'),
         }]
       },
@@ -209,15 +203,32 @@ class SummaryTable extends React.Component {
             dataSource = getDataSource(data.tickets);
           }
 
-          if (loading) return <div>loading...</div>;
-          if (error) return <div>error...</div>;
+          if (loading) return (
+            <div className='loading-summary-table'>
+              <h2>Loading...</h2>
+              <Spin size="large" style={{ margin: 50 }}/>
+            </div>
+          );
+          if (error) return (
+            <div className='loading-error'>
+              <Icon
+                type="exclamation-circle"
+                style={{ marginRight: 20, fontSize: 50, color: 'maroon' }}/>
+              <h2>Error</h2>
+            </div>
+          );
           return (
             <div className="summary-table-container">
-              <Button className="clear-btn" onClick={this.handleReset} disabled>
+              <Button className="clear-btn" disabled>
                 <Icon type="delete" />
                 Clear Search
               </Button>
-              <Table columns={columns} dataSource={dataSource} pagination={{ position: 'both' }} size="middle" />,
+              <Table
+                columns={columns}
+                dataSource={dataSource}
+                pagination={{ position: 'both' }}
+                size='medium'
+                />,
             </div>
           );
         }}

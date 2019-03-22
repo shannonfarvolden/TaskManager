@@ -56,4 +56,20 @@ function getDataSource(tickets) {
   return dataSource;
 }
 
-export { getDataSource };
+function dateSorter(dataIndex) {
+  return (a, b) => {
+    if (a[dataIndex] !== null || b[dataIndex] !== null) {
+      return new Date(a[dataIndex]) - new Date(b[dataIndex]);
+    }
+  }
+}
+
+function estimateSorter(dataIndex) {
+  return (a, b) => {
+    if (a[dataIndex] !== null || b[dataIndex] !== null) {
+      return a[dataIndex] - b[dataIndex];
+    }
+  }
+}
+
+export { getDataSource, dateSorter, estimateSorter };
