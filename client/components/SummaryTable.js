@@ -1,14 +1,18 @@
-import { Table, Input, Button, Icon, Spin } from 'antd';
+import { Table, Input, Button, Icon } from 'antd';
 import { Query } from 'react-apollo';
 import Highlighter from 'react-highlight-words';
 import {
   getDataSource, dateSorter, estimateSorter,
 } from './utilities/summaryTable.helper';
 import GET_COLUMNS from './queries/getColumns';
+import ErrorPage from './utilities/ErrorPage';
+import LoadingPage from './utilities/LoadingPage';
 
 class SummaryTable extends React.Component {
   state = {
     searchText: '',
+    clearFilterFn: () => console.log('nothing to clear'),
+    sortedInfo: null,
   };
 
   getColumnSearchProps = (dataIndex) => ({
@@ -21,12 +25,12 @@ class SummaryTable extends React.Component {
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm, clearFilters)}
           style={{ width: 188, marginBottom: 8, display: 'block' }}
         />
         <Button
           type="primary"
-          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          onClick={() => this.handleSearch(selectedKeys, confirm, clearFilters)}
           icon="search"
           size="small"
           style={{ width: 90, marginRight: 8 }}
@@ -66,9 +70,9 @@ class SummaryTable extends React.Component {
     ),
   })
 
-  handleSearch = (selectedKeys, confirm) => {
+  handleSearch = (selectedKeys, confirm, clearFilters) => {
     confirm();
-    this.setState({ searchText: selectedKeys[0] });
+    this.setState({ searchText: selectedKeys[0],  clearFilterFn: clearFilters });
   }
 
   handleReset = (clearFilters) => {
@@ -77,6 +81,10 @@ class SummaryTable extends React.Component {
   }
 
   render() {
+    const { clearFilterFn } = this.state;
+    // let { sortedInfo } = this.state;
+    // sortedInfo = sortedInfo || {};
+
     const columns = [
       {
         title: 'Remedy Ticket',
@@ -84,6 +92,7 @@ class SummaryTable extends React.Component {
         width: 180,
         sorter: (a, b) => a.remedy_short_id - b.remedy_short_id,
         sortDirections: ['descend', 'ascend'],
+        // sortOrder: sortedInfo.columnKey === 'remedy_short_id' && sortedInfo.order,
         ...this.getColumnSearchProps('remedy_short_id'),
       },
       {
@@ -203,25 +212,20 @@ class SummaryTable extends React.Component {
             dataSource = getDataSource(data.tickets);
           }
 
-          if (loading) return (
-            <div className='loading-summary-table'>
-              <h2>Loading...</h2>
-              <Spin size="large" style={{ margin: 50 }}/>
-            </div>
-          );
-          if (error) return (
-            <div className='loading-error'>
-              <Icon
-                type="exclamation-circle"
-                style={{ marginRight: 20, fontSize: 50, color: 'maroon' }}/>
-              <h2>Error</h2>
-            </div>
-          );
+          if (loading) {
+            return <LoadingPage />
+          }
+          if (error) {
+            return <ErrorPage />;
+          }
           return (
             <div className="summary-table-container">
-              <Button className="clear-btn" disabled>
+              <Button
+                className="clear-btn"
+                onClick={() => this.handleReset(clearFilterFn)}
+              >
                 <Icon type="delete" />
-                Clear Search
+                Clear Filter
               </Button>
               <Table
                 columns={columns}
