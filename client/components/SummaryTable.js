@@ -77,13 +77,13 @@ class SummaryTable extends React.Component {
 
   handleReset = (clearFilters) => {
     clearFilters();
-    this.setState({ searchText: '' });
+    this.setState({
+      searchText: '',
+    });
   }
 
   render() {
     const { clearFilterFn } = this.state;
-    // let { sortedInfo } = this.state;
-    // sortedInfo = sortedInfo || {};
 
     const columns = [
       {
@@ -92,7 +92,6 @@ class SummaryTable extends React.Component {
         width: 180,
         sorter: (a, b) => a.remedy_short_id - b.remedy_short_id,
         sortDirections: ['descend', 'ascend'],
-        // sortOrder: sortedInfo.columnKey === 'remedy_short_id' && sortedInfo.order,
         ...this.getColumnSearchProps('remedy_short_id'),
       },
       {
