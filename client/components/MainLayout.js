@@ -20,7 +20,13 @@ class SiderNav extends React.Component {
     const { handleMenuSelection } = this.props;
     return (
       <Layout style={{ minHeight: '100vh' }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={this.onCollapse}
+          breakpoint='md'
+          onBreakpoint={(broken) => { console.log(broken); }}
+          >
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Brand collapsed={collapsed} />
             <Menu.Item key="1" onClick={handleMenuSelection}>
