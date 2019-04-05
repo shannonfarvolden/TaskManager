@@ -1,3 +1,4 @@
+import moment from 'moment';
 
 function removeEmailDomain(emails) {
   if (!emails) return;
@@ -14,15 +15,7 @@ function removeEmailDomain(emails) {
 
 function formatDate(dateObj) {
   if (dateObj) {
-    let date = new Date(dateObj);
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    let year = date.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
+    return moment(dateObj).format('MM/DD/YY');
   }
 
   return null;
@@ -61,7 +54,7 @@ function dateSorter(dataIndex) {
     if (a[dataIndex] !== null || b[dataIndex] !== null) {
       return new Date(a[dataIndex]) - new Date(b[dataIndex]);
     }
-  }
+  };
 }
 
 function estimateSorter(dataIndex) {
@@ -69,7 +62,7 @@ function estimateSorter(dataIndex) {
     if (a[dataIndex] !== null || b[dataIndex] !== null) {
       return a[dataIndex] - b[dataIndex];
     }
-  }
+  };
 }
 
 export { getDataSource, dateSorter, estimateSorter };
