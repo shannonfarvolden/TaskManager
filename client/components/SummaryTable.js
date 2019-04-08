@@ -1,27 +1,35 @@
-import { Table, Input, Button, Icon } from 'antd';
+import { Table, Input, Button, Icon, Dropdown, Menu } from 'antd';
 import { Query } from 'react-apollo';
 import Highlighter from 'react-highlight-words';
 import {
-  getDataSource, dateSorter, estimateSorter,
+  getDataSource,
+  dateSorter,
+  estimateSorter,
+  getInitials,
+  highlightRow
 } from './utilities/summaryTable.helper';
 import GET_COLUMNS from './queries/getColumns';
 import ErrorPage from './utilities/ErrorPage';
 import LoadingPage from './utilities/LoadingPage';
+import './styles/index.css';
+
+const ButtonGroup = Button.Group;
 
 class SummaryTable extends React.Component {
   state = {
     searchText: '',
     clearFilterFn: () => console.log('nothing to clear'),
     sortedInfo: null,
+    columnsVisibility: {}
   };
 
-  getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys, selectedKeys, confirm, clearFilters,
-    }) => (
+  getColumnSearchProps = dataIndex => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={node => { this.searchInput = node; }}
+          ref={node => {
+            this.searchInput = node;
+          }}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -37,50 +45,48 @@ class SummaryTable extends React.Component {
         >
           Search
         </Button>
-        <Button
-          onClick={() => this.handleReset(clearFilters)}
-          size="small"
-          style={{ width: 90 }}
-        >
+        <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
           Reset
         </Button>
       </div>
     ),
-    filterIcon: filtered => <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />,
+    filterIcon: filtered => (
+      <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
     onFilter: (value, record) => {
       if (!!record[dataIndex]) {
         return record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase());
       }
     },
-    onFilterDropdownVisibleChange: (visible) => {
+    onFilterDropdownVisibleChange: visible => {
       if (visible) {
         setTimeout(() => this.searchInput.select());
       }
     },
-    render: (text) => (
+    render: text => (
       <Highlighter
         highlightStyle={{ backgroundColor: '#1890FF', color: 'white', padding: 0 }}
         searchWords={[this.state.searchText]}
         autoEscape
         textToHighlight={(text || '').toString()}
       />
-    ),
-  })
+    )
+  });
 
   handleSearch = (selectedKeys, confirm, clearFilters) => {
     confirm();
-    this.setState({ searchText: selectedKeys[0],  clearFilterFn: clearFilters });
-  }
+    this.setState({ searchText: selectedKeys[0], clearFilterFn: clearFilters });
+  };
 
-  handleReset = (clearFilters) => {
+  handleReset = clearFilters => {
     clearFilters();
     this.setState({
-      searchText: '',
+      searchText: ''
     });
-  }
+  };
 
   render() {
     const { clearFilterFn } = this.state;
@@ -92,116 +98,163 @@ class SummaryTable extends React.Component {
         width: 180,
         sorter: (a, b) => a.remedy_short_id - b.remedy_short_id,
         sortDirections: ['descend', 'ascend'],
-        ...this.getColumnSearchProps('remedy_short_id'),
+        ...this.getColumnSearchProps('remedy_short_id')
       },
       {
         title: 'PM',
         dataIndex: 'product_manager',
         width: 200,
         ...this.getColumnSearchProps('product_manager'),
+        render: text => {
+          if (text) {
+            return getInitials(text);
+          }
+        }
       },
       {
         title: 'BA',
         dataIndex: 'business_analyst_lead',
         width: 200,
         ...this.getColumnSearchProps('business_analyst_lead'),
+        render: text => {
+          if (text) {
+            return getInitials(text);
+          }
+        }
       },
       {
         title: 'Dev',
         dataIndex: 'development_lead',
         width: 200,
         ...this.getColumnSearchProps('development_lead'),
+        render: text => {
+          if (text) {
+            return getInitials(text);
+          }
+        }
       },
       {
         title: 'QA',
         dataIndex: 'qa_lead',
         width: 200,
         ...this.getColumnSearchProps('qa_lead'),
+        render: text => {
+          if (text) {
+            return getInitials(text);
+          }
+        }
       },
       {
         title: 'Status',
         dataIndex: 'phase',
         width: 180,
-        ...this.getColumnSearchProps('phase'),
+        ...this.getColumnSearchProps('phase')
       },
       {
         title: 'Due Date',
-        children: [{
-          title: 'BRD',
-          dataIndex: 'brd_planned_date',
-          sorter: dateSorter('brd_planned_date'),
-          sortDirections: ['descend', 'ascend'],
-          ...this.getColumnSearchProps('brd_planned_date'),
-        }, {
-          title: 'FRD',
-          dataIndex: 'frd_planned_date',
-          sorter: dateSorter('frd_planned_date'),
-          sortDirections: ['descend', 'ascend'],
-          ...this.getColumnSearchProps('frd_planned_date'),
-        }, {
-          title: 'Dev',
-          dataIndex: 'dev_planned_date',
-          sorter: dateSorter('dev_planned_date'),
-          sortDirections: ['descend', 'ascend'],
-          ...this.getColumnSearchProps('dev_planned_date'),
-        }, {
-          title: 'BAT',
-          dataIndex: 'ba_unit_testing_planned_date',
-          sorter: dateSorter('ba_unit_testing_planned_date'),
-          sortDirections: ['descend', 'ascend'],
-          ...this.getColumnSearchProps('ba_unit_testing_planned_date'),
-        }, {
-          title: 'QAT',
-          dataIndex: 'qa_test_completion_planned_date',
-          sorter: dateSorter('qa_test_completion_planned_date'),
-          sortDirections: ['descend', 'ascend'],
-          ...this.getColumnSearchProps('qa_test_completion_planned_date'),
-        }]
+        children: [
+          {
+            title: 'BRD',
+            dataIndex: 'brd_planned_date',
+            sorter: dateSorter('brd_planned_date'),
+            sortDirections: ['descend', 'ascend'],
+            ...this.getColumnSearchProps('brd_planned_date')
+          },
+          {
+            title: 'FRD',
+            dataIndex: 'frd_planned_date',
+            sorter: dateSorter('frd_planned_date'),
+            sortDirections: ['descend', 'ascend'],
+            ...this.getColumnSearchProps('frd_planned_date')
+          },
+          {
+            title: 'Dev',
+            dataIndex: 'dev_planned_date',
+            sorter: dateSorter('dev_planned_date'),
+            sortDirections: ['descend', 'ascend'],
+            ...this.getColumnSearchProps('dev_planned_date')
+          },
+          {
+            title: 'BAT',
+            dataIndex: 'ba_unit_testing_planned_date',
+            sorter: dateSorter('ba_unit_testing_planned_date'),
+            sortDirections: ['descend', 'ascend'],
+            ...this.getColumnSearchProps('ba_unit_testing_planned_date')
+          },
+          {
+            title: 'QAT',
+            dataIndex: 'qa_test_completion_planned_date',
+            sorter: dateSorter('qa_test_completion_planned_date'),
+            sortDirections: ['descend', 'ascend'],
+            ...this.getColumnSearchProps('qa_test_completion_planned_date')
+          }
+        ]
       },
       {
         title: 'Issue',
         dataIndex: 'summary',
         width: 200,
-        ...this.getColumnSearchProps('summary'),
+        ...this.getColumnSearchProps('summary')
       },
       {
         title: 'Estimate',
-        children: [{
-          title: 'Dev',
-          dataIndex: 'dev_estimate',
-          sorter: estimateSorter('dev_estimate'),
-          sortDirections: ['descend', 'ascend'],
-          ...this.getColumnSearchProps('dev_estimate'),
-        }, {
-          title: 'BA',
-          dataIndex: 'ba_estimate',
-          sorter: estimateSorter('ba_estimate'),
-          sortDirections: ['descend', 'ascend'],
-          ...this.getColumnSearchProps('ba_estimate'),
-        }, {
-          title: 'QA',
-          dataIndex: 'qa_estimate',
-          sorter: estimateSorter('qa_estimate'),
-          sortDirections: ['descend', 'ascend'],
-          ...this.getColumnSearchProps('qa_estimate'),
-        }]
+        children: [
+          {
+            title: 'Dev',
+            dataIndex: 'dev_estimate',
+            sorter: estimateSorter('dev_estimate'),
+            sortDirections: ['descend', 'ascend'],
+            ...this.getColumnSearchProps('dev_estimate')
+          },
+          {
+            title: 'BA',
+            dataIndex: 'ba_estimate',
+            sorter: estimateSorter('ba_estimate'),
+            sortDirections: ['descend', 'ascend'],
+            ...this.getColumnSearchProps('ba_estimate')
+          },
+          {
+            title: 'QA',
+            dataIndex: 'qa_estimate',
+            sorter: estimateSorter('qa_estimate'),
+            sortDirections: ['descend', 'ascend'],
+            ...this.getColumnSearchProps('qa_estimate')
+          }
+        ]
       },
       {
         title: 'Release ID',
         dataIndex: 'delivery_release_id',
-        ...this.getColumnSearchProps('delivery_release_id'),
+        ...this.getColumnSearchProps('delivery_release_id')
       },
       {
         title: 'Subcategory',
         dataIndex: 'product_type',
-        ...this.getColumnSearchProps('product_type'),
+        ...this.getColumnSearchProps('product_type')
       },
       {
         title: 'Product',
         dataIndex: 'parent_product',
-        ...this.getColumnSearchProps('parent_product'),
+        ...this.getColumnSearchProps('parent_product')
       }
     ];
+
+    const menu = (
+      <Menu>
+        <Menu.Item key="1">
+          <Icon type="user" />
+          1st menu item
+        </Menu.Item>
+        <Menu.Item key="2">
+          <Icon type="user" />
+          2nd menu item
+        </Menu.Item>
+        <Menu.Item key="3">
+          <Icon type="user" />
+          3rd item
+        </Menu.Item>
+      </Menu>
+    );
 
     return (
       <Query query={GET_COLUMNS}>
@@ -212,35 +265,39 @@ class SummaryTable extends React.Component {
           }
 
           if (loading) {
-            return <LoadingPage />
+            return <LoadingPage />;
           }
           if (error) {
             return <ErrorPage />;
           }
           return (
             <div className="summary-table-container">
-              <Button
-                className="clear-btn"
-                onClick={() => this.handleReset(clearFilterFn)}
-              >
+              <Button className="clear-btn" onClick={() => this.handleReset(clearFilterFn)}>
                 <Icon type="delete" />
                 Clear Filter
               </Button>
+              <ButtonGroup>
+                <Dropdown overlay={menu}>
+                  <Button>Column Visibility</Button>
+                </Dropdown>
+                <Button>Highlight</Button>
+              </ButtonGroup>
               <Table
                 columns={columns}
                 dataSource={dataSource}
                 pagination={{ position: 'both' }}
-                size='medium'
-                />,
+                size="medium"
+                rowClassName={(record, index) => {
+                  return highlightRow(record);
+                }}
+              />
+              ,
             </div>
           );
         }}
       </Query>
     );
   }
-
-
-
 }
 
 export default SummaryTable;
