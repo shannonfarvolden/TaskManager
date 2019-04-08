@@ -1,4 +1,4 @@
-import { Table, Input, Button, Icon, Dropdown, Menu } from 'antd';
+import { Table, Input, Button, Icon, Dropdown, Menu, Select } from 'antd';
 import { Query } from 'react-apollo';
 import Highlighter from 'react-highlight-words';
 import {
@@ -14,14 +14,19 @@ import LoadingPage from './utilities/LoadingPage';
 import './styles/index.css';
 
 const ButtonGroup = Button.Group;
-
+const Option = Select.Option;
 class SummaryTable extends React.Component {
-  state = {
-    searchText: '',
-    clearFilterFn: () => console.log('nothing to clear'),
-    sortedInfo: null,
-    columnsVisibility: {}
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchText: '',
+      clearFilterFn: () => console.log('nothing to clear'),
+      sortedInfo: null,
+      selectedColumns: []
+    };
+    this.getColumns = this.getColumns.bind(this);
+    this.hideColumns = this.hideColumns.bind(this);
+  }
 
   getColumnSearchProps = dataIndex => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -88,22 +93,28 @@ class SummaryTable extends React.Component {
     });
   };
 
-  render() {
-    const { clearFilterFn } = this.state;
+  hideColumns(value) {
+    this.setState({
+      selectedColumns: value
+    });
+  }
 
-    const columns = [
+  getColumns = () => {
+    return [
       {
         title: 'Remedy Ticket',
         dataIndex: 'remedy_short_id',
         width: 180,
         sorter: (a, b) => a.remedy_short_id - b.remedy_short_id,
         sortDirections: ['descend', 'ascend'],
+        className: this.state.selectedColumns.includes('Remedy Ticket') ? 'hide' : '',
         ...this.getColumnSearchProps('remedy_short_id')
       },
       {
         title: 'PM',
         dataIndex: 'product_manager',
         width: 200,
+        className: this.state.selectedColumns.includes('PM') ? 'hide' : '',
         ...this.getColumnSearchProps('product_manager'),
         render: text => {
           if (text) {
@@ -115,6 +126,7 @@ class SummaryTable extends React.Component {
         title: 'BA',
         dataIndex: 'business_analyst_lead',
         width: 200,
+        className: this.state.selectedColumns.includes('BA') ? 'hide' : '',
         ...this.getColumnSearchProps('business_analyst_lead'),
         render: text => {
           if (text) {
@@ -126,6 +138,7 @@ class SummaryTable extends React.Component {
         title: 'Dev',
         dataIndex: 'development_lead',
         width: 200,
+        className: this.state.selectedColumns.includes('Dev') ? 'hide' : '',
         ...this.getColumnSearchProps('development_lead'),
         render: text => {
           if (text) {
@@ -137,6 +150,7 @@ class SummaryTable extends React.Component {
         title: 'QA',
         dataIndex: 'qa_lead',
         width: 200,
+        className: this.state.selectedColumns.includes('QA') ? 'hide' : '',
         ...this.getColumnSearchProps('qa_lead'),
         render: text => {
           if (text) {
@@ -148,6 +162,7 @@ class SummaryTable extends React.Component {
         title: 'Status',
         dataIndex: 'phase',
         width: 180,
+        className: this.state.selectedColumns.includes('Status') ? 'hide' : '',
         ...this.getColumnSearchProps('phase')
       },
       {
@@ -158,6 +173,7 @@ class SummaryTable extends React.Component {
             dataIndex: 'brd_planned_date',
             sorter: dateSorter('brd_planned_date'),
             sortDirections: ['descend', 'ascend'],
+            className: this.state.selectedColumns.includes('BRD') ? 'hide' : '',
             ...this.getColumnSearchProps('brd_planned_date')
           },
           {
@@ -165,6 +181,7 @@ class SummaryTable extends React.Component {
             dataIndex: 'frd_planned_date',
             sorter: dateSorter('frd_planned_date'),
             sortDirections: ['descend', 'ascend'],
+            className: this.state.selectedColumns.includes('FRD') ? 'hide' : '',
             ...this.getColumnSearchProps('frd_planned_date')
           },
           {
@@ -172,6 +189,7 @@ class SummaryTable extends React.Component {
             dataIndex: 'dev_planned_date',
             sorter: dateSorter('dev_planned_date'),
             sortDirections: ['descend', 'ascend'],
+            className: this.state.selectedColumns.includes('Dev - DueDate') ? 'hide' : '',
             ...this.getColumnSearchProps('dev_planned_date')
           },
           {
@@ -179,6 +197,7 @@ class SummaryTable extends React.Component {
             dataIndex: 'ba_unit_testing_planned_date',
             sorter: dateSorter('ba_unit_testing_planned_date'),
             sortDirections: ['descend', 'ascend'],
+            className: this.state.selectedColumns.includes('BAT - DueDate') ? 'hide' : '',
             ...this.getColumnSearchProps('ba_unit_testing_planned_date')
           },
           {
@@ -186,6 +205,7 @@ class SummaryTable extends React.Component {
             dataIndex: 'qa_test_completion_planned_date',
             sorter: dateSorter('qa_test_completion_planned_date'),
             sortDirections: ['descend', 'ascend'],
+            className: this.state.selectedColumns.includes('QAT - DueDate') ? 'hide' : '',
             ...this.getColumnSearchProps('qa_test_completion_planned_date')
           }
         ]
@@ -194,6 +214,7 @@ class SummaryTable extends React.Component {
         title: 'Issue',
         dataIndex: 'summary',
         width: 200,
+        className: this.state.selectedColumns.includes('Issue') ? 'hide' : '',
         ...this.getColumnSearchProps('summary')
       },
       {
@@ -204,6 +225,7 @@ class SummaryTable extends React.Component {
             dataIndex: 'dev_estimate',
             sorter: estimateSorter('dev_estimate'),
             sortDirections: ['descend', 'ascend'],
+            className: this.state.selectedColumns.includes('Dev - Estimate') ? 'hide' : '',
             ...this.getColumnSearchProps('dev_estimate')
           },
           {
@@ -211,6 +233,7 @@ class SummaryTable extends React.Component {
             dataIndex: 'ba_estimate',
             sorter: estimateSorter('ba_estimate'),
             sortDirections: ['descend', 'ascend'],
+            className: this.state.selectedColumns.includes('BA - Estimate') ? 'hide' : '',
             ...this.getColumnSearchProps('ba_estimate')
           },
           {
@@ -218,6 +241,7 @@ class SummaryTable extends React.Component {
             dataIndex: 'qa_estimate',
             sorter: estimateSorter('qa_estimate'),
             sortDirections: ['descend', 'ascend'],
+            className: this.state.selectedColumns.includes('QA - Estimate') ? 'hide' : '',
             ...this.getColumnSearchProps('qa_estimate')
           }
         ]
@@ -225,41 +249,58 @@ class SummaryTable extends React.Component {
       {
         title: 'Release ID',
         dataIndex: 'delivery_release_id',
+        className: this.state.selectedColumns.includes('Release ID') ? 'hide' : '',
         ...this.getColumnSearchProps('delivery_release_id')
       },
       {
         title: 'Subcategory',
         dataIndex: 'product_type',
+        className: this.state.selectedColumns.includes('Subcategory') ? 'hide' : '',
         ...this.getColumnSearchProps('product_type')
       },
       {
         title: 'Product',
         dataIndex: 'parent_product',
+        className: this.state.selectedColumns.includes('Product') ? 'hide' : '',
         ...this.getColumnSearchProps('parent_product')
       }
     ];
+  };
 
-    const menu = (
-      <Menu>
-        <Menu.Item key="1">
-          <Icon type="user" />
-          1st menu item
-        </Menu.Item>
-        <Menu.Item key="2">
-          <Icon type="user" />
-          2nd menu item
-        </Menu.Item>
-        <Menu.Item key="3">
-          <Icon type="user" />
-          3rd item
-        </Menu.Item>
-      </Menu>
-    );
+  render() {
+    const { clearFilterFn, selectedColumns } = this.state;
+
+    const allColumns = [
+      'Remedy Ticket',
+      'PM',
+      'BA',
+      'Dev',
+      'QA',
+      'Status',
+      'BRD',
+      'FRD',
+      'Dev - DueDate',
+      'BAT - DueDate',
+      'QAT - DueDate',
+      'Issue',
+      'Dev - Estimate',
+      'BA - Estimate',
+      'QA - Estimate',
+      'Release ID',
+      'Subcategory',
+      'Product'
+    ];
+
+    const children = [];
+    allColumns.forEach(col => {
+      children.push(<Option key={col}>{col}</Option>);
+    });
 
     return (
       <Query query={GET_COLUMNS}>
         {({ loading, error, data }) => {
           let dataSource = [{}];
+
           if (data) {
             dataSource = getDataSource(data.tickets);
           }
@@ -277,13 +318,18 @@ class SummaryTable extends React.Component {
                 Clear Filter
               </Button>
               <ButtonGroup>
-                <Dropdown overlay={menu}>
-                  <Button>Column Visibility</Button>
-                </Dropdown>
                 <Button>Highlight</Button>
               </ButtonGroup>
+              <Select
+                mode="multiple"
+                style={{ width: '100%' }}
+                placeholder="Select columns to hide"
+                onChange={this.hideColumns}
+              >
+                {children}
+              </Select>
               <Table
-                columns={columns}
+                columns={this.getColumns()}
                 dataSource={dataSource}
                 pagination={{ position: 'both' }}
                 size="medium"

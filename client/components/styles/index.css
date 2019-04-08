@@ -106,3 +106,7 @@ td span {
 .highlightMissingQAResource {
   background-color: #b89afe;
 }
+
+.hide {
+  display: none;
+}
