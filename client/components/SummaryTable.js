@@ -22,10 +22,12 @@ class SummaryTable extends React.Component {
       searchText: '',
       clearFilterFn: () => console.log('nothing to clear'),
       sortedInfo: null,
-      selectedColumns: []
+      selectedColumns: [],
+      highlight: true
     };
     this.getColumns = this.getColumns.bind(this);
     this.hideColumns = this.hideColumns.bind(this);
+    this.toggleHighlight = this.toggleHighlight.bind(this);
   }
 
   getColumnSearchProps = dataIndex => ({
@@ -97,6 +99,12 @@ class SummaryTable extends React.Component {
     this.setState({
       selectedColumns: value
     });
+  }
+
+  toggleHighlight(event) {
+    this.setState((state, props) => ({
+      highlight: !state.highlight
+    }));
   }
 
   getColumns = () => {
@@ -219,6 +227,7 @@ class SummaryTable extends React.Component {
       },
       {
         title: 'Estimate',
+        className: 'autoWidth',
         children: [
           {
             title: 'Dev',
@@ -268,7 +277,7 @@ class SummaryTable extends React.Component {
   };
 
   render() {
-    const { clearFilterFn, selectedColumns } = this.state;
+    const { clearFilterFn, highlight } = this.state;
 
     const allColumns = [
       'Remedy Ticket',
@@ -318,7 +327,7 @@ class SummaryTable extends React.Component {
                 Clear Filter
               </Button>
               <ButtonGroup>
-                <Button>Highlight</Button>
+                <Button onClick={this.toggleHighlight}>Highlight</Button>
               </ButtonGroup>
               <Select
                 mode="multiple"
@@ -334,6 +343,10 @@ class SummaryTable extends React.Component {
                 pagination={{ position: 'both' }}
                 size="medium"
                 rowClassName={(record, index) => {
+                  console.log('hightligh in render', highlight);
+                  if (!highlight) {
+                    return '';
+                  }
                   return highlightRow(record);
                 }}
               />
