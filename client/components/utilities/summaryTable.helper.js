@@ -1,36 +1,34 @@
 import moment from 'moment';
 import { Tooltip } from 'antd';
+
 function removeEmailDomain(emails) {
   if (!emails) return;
-  const emailArr = emails.split(',');
-  let nameOnlyArr = [];
+  const emailArr = emails.split(',').filter(email => email !== '');
+  const nameOnlyArr = [];
   emailArr.forEach(email => {
-    email.lastIndexOf('@') >= 0
-      ? nameOnlyArr.push(email.substring(0, email.lastIndexOf('@')))
-      : nameOnlyArr.push(email);
+    email = email.lastIndexOf('@') >= 0 ? email.substring(0, email.lastIndexOf('@')) : email;
+    if (nameOnlyArr.indexOf(email) === -1) {
+      nameOnlyArr.push(email);
+    }
   });
 
-  return nameOnlyArr.join();
+  return nameOnlyArr.join(';');
 }
 
 function formatDate(dateObj) {
-  if (dateObj) {
-    return moment(dateObj).format('MM/DD/YY');
-  }
-
-  return null;
+  return dateObj ? moment(dateObj).format('MM/DD/YY') : null;
 }
 
 function getInitials(fullNames) {
   let fullName = [];
   let initials = [];
-  fullNames.split(',').forEach(name => {
+  fullNames.split(';').forEach(name => {
     fullName = name.split('.');
     initials.push(fullName[0][0] + fullName[1][0]);
   });
   return (
     <Tooltip placement="topLeft" title={fullNames}>
-      <p>{initials.join(',')}</p>
+      <p>{initials.join(';')}</p>
     </Tooltip>
   );
 }
@@ -42,59 +40,49 @@ function highlightRow(row) {
     return 'highlightMissingDEVDueDate';
   } else if (!row.ba_unit_testing_planned_date) {
     return 'highlightMissingBADueDate';
-  } else if (!row.qa_test_completion_planned_date) {
-    return 'highlightMissingQADueDate';
   } else if (!row.business_analyst_lead) {
     return 'highlightMissingBAResource';
   } else if (!row.development_lead) {
     return 'highlightMissingDEVResource';
-  } else if (!row.qa_lead) {
-    return 'highlightMissingQAResource';
   }
 }
 
 function getDataSource(tickets, viewHotListDRF) {
   let dataSource = [];
-  tickets.forEach((ticket, index) => {
-    if (viewHotListDRF) {
-      if (
-        ticket.delivery_release_id === 'Dataphile - Off Cycle' &&
-        (ticket.phase === 'In Progress' || ticket.phase === 'Planning')
-      ) {
-        ticket.product_manager = removeEmailDomain(ticket.product_manager);
-        ticket.business_analyst_lead = removeEmailDomain(ticket.business_analyst_lead);
-        ticket.development_lead = removeEmailDomain(ticket.development_lead);
-        ticket.qa_lead = removeEmailDomain(ticket.qa_lead);
-        ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
-        ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
-        ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
-        ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
-        ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
-        let tableRow = { key: index };
-        tableRow = { ...tableRow, ...ticket };
-        dataSource.push(tableRow);
-      }
-    } else {
-      if (
-        ticket.delivery_release_id !== 'Dataphile - Off Cycle' &&
-        (ticket.phase === 'In Progress' || ticket.phase === 'Planning')
-      ) {
-        ticket.product_manager = removeEmailDomain(ticket.product_manager);
-        ticket.business_analyst_lead = removeEmailDomain(ticket.business_analyst_lead);
-        ticket.development_lead = removeEmailDomain(ticket.development_lead);
-        ticket.qa_lead = removeEmailDomain(ticket.qa_lead);
-        ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
-        ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
-        ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
-        ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
-        ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
-        let tableRow = { key: index };
-        tableRow = { ...tableRow, ...ticket };
-        dataSource.push(tableRow);
-      }
+  for (let idx in tickets) {
+    if (
+      (viewHotListDRF && tickets[idx].delivery_release_id !== 'Dataphile - Off Cycle') ||
+      (!viewHotListDRF && tickets[idx].delivery_release_id === 'Dataphile - Off Cycle')
+    ) {
+      continue;
     }
-  });
-
+    if (tickets[idx].phase === 'In Progress' || tickets[idx].phase === 'Planning') {
+      tickets[idx].pm_ba = removeEmailDomain(
+        [
+          tickets[idx].product_manager,
+          tickets[idx].business_analyst_lead,
+          tickets[idx].business_analyst_team
+        ].join(',')
+      );
+      tickets[idx].dev = removeEmailDomain(
+        [
+          tickets[idx].development_manager,
+          tickets[idx].development_lead,
+          tickets[idx].development_team
+        ].join(',')
+      );
+      tickets[idx].phase_progress_level = `${tickets[idx].phase} - ${tickets[idx].progress_levels}`;
+      tickets[idx].brd_planned_date = formatDate(tickets[idx].brd_planned_date);
+      tickets[idx].frd_planned_date = formatDate(tickets[idx].frd_planned_date);
+      tickets[idx].dev_planned_date = formatDate(tickets[idx].dev_planned_date);
+      tickets[idx].ba_unit_testing_planned_date = formatDate(
+        tickets[idx].ba_unit_testing_planned_date
+      );
+      let tableRow = { key: idx };
+      tableRow = { ...tableRow, ...tickets[idx] };
+      dataSource.push(tableRow);
+    }
+  }
   return dataSource;
 }
 

@@ -8,6 +8,7 @@ import {
   getInitials,
   highlightRow
 } from './utilities/summaryTable.helper';
+import ALL_COLUMNS from './utilities/summaryTable.constant';
 import GET_COLUMNS from './queries/getColumns';
 import ErrorPage from './utilities/ErrorPage';
 import LoadingPage from './utilities/LoadingPage';
@@ -127,23 +128,11 @@ class SummaryTable extends React.Component {
         ...this.getColumnSearchProps('remedy_short_id')
       },
       {
-        title: 'PM',
-        dataIndex: 'product_manager',
+        title: 'PM / BA',
+        dataIndex: 'pm_ba',
         width: 200,
-        className: this.state.selectedColumns.includes('PM') ? 'hide' : '',
-        ...this.getColumnSearchProps('product_manager'),
-        render: text => {
-          if (text) {
-            return getInitials(text);
-          }
-        }
-      },
-      {
-        title: 'BA',
-        dataIndex: 'business_analyst_lead',
-        width: 200,
-        className: this.state.selectedColumns.includes('BA') ? 'hide' : '',
-        ...this.getColumnSearchProps('business_analyst_lead'),
+        className: this.state.selectedColumns.includes('PM/BA') ? 'hide' : '',
+        ...this.getColumnSearchProps('pm_ba'),
         render: text => {
           if (text) {
             return getInitials(text);
@@ -152,22 +141,10 @@ class SummaryTable extends React.Component {
       },
       {
         title: 'Dev',
-        dataIndex: 'development_lead',
+        dataIndex: 'dev',
         width: 200,
         className: this.state.selectedColumns.includes('Dev') ? 'hide' : '',
-        ...this.getColumnSearchProps('development_lead'),
-        render: text => {
-          if (text) {
-            return getInitials(text);
-          }
-        }
-      },
-      {
-        title: 'QA',
-        dataIndex: 'qa_lead',
-        width: 200,
-        className: this.state.selectedColumns.includes('QA') ? 'hide' : '',
-        ...this.getColumnSearchProps('qa_lead'),
+        ...this.getColumnSearchProps('dev'),
         render: text => {
           if (text) {
             return getInitials(text);
@@ -176,55 +153,42 @@ class SummaryTable extends React.Component {
       },
       {
         title: 'Status',
-        dataIndex: 'phase',
+        dataIndex: 'phase_progress_level',
         width: 180,
         className: this.state.selectedColumns.includes('Status') ? 'hide' : '',
-        ...this.getColumnSearchProps('phase')
+        ...this.getColumnSearchProps('phase_progress_level')
       },
       {
-        title: 'Due Date',
-        children: [
-          {
-            title: 'BRD',
-            dataIndex: 'brd_planned_date',
-            sorter: dateSorter('brd_planned_date'),
-            sortDirections: ['descend', 'ascend'],
-            className: this.state.selectedColumns.includes('BRD') ? 'hide' : '',
-            ...this.getColumnSearchProps('brd_planned_date')
-          },
-          {
-            title: 'FRD',
-            dataIndex: 'frd_planned_date',
-            sorter: dateSorter('frd_planned_date'),
-            sortDirections: ['descend', 'ascend'],
-            className: this.state.selectedColumns.includes('FRD') ? 'hide' : '',
-            ...this.getColumnSearchProps('frd_planned_date')
-          },
-          {
-            title: 'Dev',
-            dataIndex: 'dev_planned_date',
-            sorter: dateSorter('dev_planned_date'),
-            sortDirections: ['descend', 'ascend'],
-            className: this.state.selectedColumns.includes('Dev - DueDate') ? 'hide' : '',
-            ...this.getColumnSearchProps('dev_planned_date')
-          },
-          {
-            title: 'BAT',
-            dataIndex: 'ba_unit_testing_planned_date',
-            sorter: dateSorter('ba_unit_testing_planned_date'),
-            sortDirections: ['descend', 'ascend'],
-            className: this.state.selectedColumns.includes('BAT - DueDate') ? 'hide' : '',
-            ...this.getColumnSearchProps('ba_unit_testing_planned_date')
-          },
-          {
-            title: 'QAT',
-            dataIndex: 'qa_test_completion_planned_date',
-            sorter: dateSorter('qa_test_completion_planned_date'),
-            sortDirections: ['descend', 'ascend'],
-            className: this.state.selectedColumns.includes('QAT - DueDate') ? 'hide' : '',
-            ...this.getColumnSearchProps('qa_test_completion_planned_date')
-          }
-        ]
+        title: 'BRD Due Date',
+        dataIndex: 'brd_planned_date',
+        sorter: dateSorter('brd_planned_date'),
+        sortDirections: ['descend', 'ascend'],
+        className: this.state.selectedColumns.includes('BRD') ? 'hide' : '',
+        ...this.getColumnSearchProps('brd_planned_date')
+      },
+      {
+        title: 'FRD Due Date',
+        dataIndex: 'frd_planned_date',
+        sorter: dateSorter('frd_planned_date'),
+        sortDirections: ['descend', 'ascend'],
+        className: this.state.selectedColumns.includes('FRD') ? 'hide' : '',
+        ...this.getColumnSearchProps('frd_planned_date')
+      },
+      {
+        title: 'Dev Due Date',
+        dataIndex: 'dev_planned_date',
+        sorter: dateSorter('dev_planned_date'),
+        sortDirections: ['descend', 'ascend'],
+        className: this.state.selectedColumns.includes('Dev - DueDate') ? 'hide' : '',
+        ...this.getColumnSearchProps('dev_planned_date')
+      },
+      {
+        title: 'BAT Due Date',
+        dataIndex: 'ba_unit_testing_planned_date',
+        sorter: dateSorter('ba_unit_testing_planned_date'),
+        sortDirections: ['descend', 'ascend'],
+        className: this.state.selectedColumns.includes('BAT - DueDate') ? 'hide' : '',
+        ...this.getColumnSearchProps('ba_unit_testing_planned_date')
       },
       {
         title: 'Issue',
@@ -234,34 +198,20 @@ class SummaryTable extends React.Component {
         ...this.getColumnSearchProps('summary')
       },
       {
-        title: 'Estimate',
-        className: 'autoWidth',
-        children: [
-          {
-            title: 'Dev',
-            dataIndex: 'dev_estimate',
-            sorter: estimateSorter('dev_estimate'),
-            sortDirections: ['descend', 'ascend'],
-            className: this.state.selectedColumns.includes('Dev - Estimate') ? 'hide' : '',
-            ...this.getColumnSearchProps('dev_estimate')
-          },
-          {
-            title: 'BA',
-            dataIndex: 'ba_estimate',
-            sorter: estimateSorter('ba_estimate'),
-            sortDirections: ['descend', 'ascend'],
-            className: this.state.selectedColumns.includes('BA - Estimate') ? 'hide' : '',
-            ...this.getColumnSearchProps('ba_estimate')
-          },
-          {
-            title: 'QA',
-            dataIndex: 'qa_estimate',
-            sorter: estimateSorter('qa_estimate'),
-            sortDirections: ['descend', 'ascend'],
-            className: this.state.selectedColumns.includes('QA - Estimate') ? 'hide' : '',
-            ...this.getColumnSearchProps('qa_estimate')
-          }
-        ]
+        title: 'Est Dev',
+        dataIndex: 'dev_estimate',
+        sorter: estimateSorter('dev_estimate'),
+        sortDirections: ['descend', 'ascend'],
+        className: this.state.selectedColumns.includes('Dev - Estimate') ? 'hide' : '',
+        ...this.getColumnSearchProps('dev_estimate')
+      },
+      {
+        title: 'Est BA',
+        dataIndex: 'ba_estimate',
+        sorter: estimateSorter('ba_estimate'),
+        sortDirections: ['descend', 'ascend'],
+        className: this.state.selectedColumns.includes('BA - Estimate') ? 'hide' : '',
+        ...this.getColumnSearchProps('ba_estimate')
       },
       {
         title: 'Release ID',
@@ -287,29 +237,8 @@ class SummaryTable extends React.Component {
   render() {
     const { clearFilterFn, highlight, viewHotListDRF } = this.state;
 
-    const allColumns = [
-      'Remedy Ticket',
-      'PM',
-      'BA',
-      'Dev',
-      'QA',
-      'Status',
-      'BRD',
-      'FRD',
-      'Dev - DueDate',
-      'BAT - DueDate',
-      'QAT - DueDate',
-      'Issue',
-      'Dev - Estimate',
-      'BA - Estimate',
-      'QA - Estimate',
-      'Release ID',
-      'Subcategory',
-      'Product'
-    ];
-
     const children = [];
-    allColumns.forEach(col => {
+    ALL_COLUMNS.forEach(col => {
       children.push(<Option key={col}>{col}</Option>);
     });
 
@@ -357,7 +286,6 @@ class SummaryTable extends React.Component {
                 pagination={{ position: 'both' }}
                 size="medium"
                 rowClassName={(record, index) => {
-                  console.log('hightlight in render', highlight);
                   if (!highlight) {
                     return '';
                   }
