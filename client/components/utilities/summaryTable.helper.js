@@ -1,4 +1,5 @@
-
+import moment from 'moment';
+import { Tooltip } from 'antd';
 function removeEmailDomain(emails) {
   if (!emails) return;
   const emailArr = emails.split(',');
@@ -14,43 +15,84 @@ function removeEmailDomain(emails) {
 
 function formatDate(dateObj) {
   if (dateObj) {
-    let date = new Date(dateObj);
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    let year = date.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
+    return moment(dateObj).format('MM/DD/YY');
   }
 
   return null;
 }
 
-function formatNameStrings(emails) {
-  let nameStrings = removeEmailDomain(emails);
-  if (nameStrings) {
-    nameStrings = nameStrings.split(',').join('\n');
-  }
-  return nameStrings;
+function getInitials(fullNames) {
+  let fullName = [];
+  let initials = [];
+  fullNames.split(',').forEach(name => {
+    fullName = name.split('.');
+    initials.push(fullName[0][0] + fullName[1][0]);
+  });
+  return (
+    <Tooltip placement="topLeft" title={fullNames}>
+      <p>{initials.join(',')}</p>
+    </Tooltip>
+  );
 }
 
-function getDataSource(tickets) {
+function highlightRow(row) {
+  if (!row.brd_planned_date) {
+    return 'highlightMissingBRDDueDate';
+  } else if (!row.dev_planned_date) {
+    return 'highlightMissingDEVDueDate';
+  } else if (!row.ba_unit_testing_planned_date) {
+    return 'highlightMissingBADueDate';
+  } else if (!row.qa_test_completion_planned_date) {
+    return 'highlightMissingQADueDate';
+  } else if (!row.business_analyst_lead) {
+    return 'highlightMissingBAResource';
+  } else if (!row.development_lead) {
+    return 'highlightMissingDEVResource';
+  } else if (!row.qa_lead) {
+    return 'highlightMissingQAResource';
+  }
+}
+
+function getDataSource(tickets, viewHotListDRF) {
   let dataSource = [];
   tickets.forEach((ticket, index) => {
-    ticket.product_manager = formatNameStrings(ticket.product_manager);
-    ticket.business_analyst_lead = formatNameStrings(ticket.business_analyst_lead);
-    ticket.development_lead = formatNameStrings(ticket.development_lead);
-    ticket.qa_lead = formatNameStrings(ticket.qa_lead);
-    ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
-    ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
-    ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
-    ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
-    ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
-    let tableRow = { key: index };
-    tableRow = { ...tableRow, ...ticket };
-    dataSource.push(tableRow);
+    if (viewHotListDRF) {
+      if (
+        ticket.delivery_release_id === 'Dataphile - Off Cycle' &&
+        (ticket.phase === 'In Progress' || ticket.phase === 'Planning')
+      ) {
+        ticket.product_manager = removeEmailDomain(ticket.product_manager);
+        ticket.business_analyst_lead = removeEmailDomain(ticket.business_analyst_lead);
+        ticket.development_lead = removeEmailDomain(ticket.development_lead);
+        ticket.qa_lead = removeEmailDomain(ticket.qa_lead);
+        ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
+        ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
+        ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
+        ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
+        ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
+        let tableRow = { key: index };
+        tableRow = { ...tableRow, ...ticket };
+        dataSource.push(tableRow);
+      }
+    } else {
+      if (
+        ticket.delivery_release_id !== 'Dataphile - Off Cycle' &&
+        (ticket.phase === 'In Progress' || ticket.phase === 'Planning')
+      ) {
+        ticket.product_manager = removeEmailDomain(ticket.product_manager);
+        ticket.business_analyst_lead = removeEmailDomain(ticket.business_analyst_lead);
+        ticket.development_lead = removeEmailDomain(ticket.development_lead);
+        ticket.qa_lead = removeEmailDomain(ticket.qa_lead);
+        ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
+        ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
+        ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
+        ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
+        ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
+        let tableRow = { key: index };
+        tableRow = { ...tableRow, ...ticket };
+        dataSource.push(tableRow);
+      }
+    }
   });
 
   return dataSource;
@@ -61,7 +103,7 @@ function dateSorter(dataIndex) {
     if (a[dataIndex] !== null || b[dataIndex] !== null) {
       return new Date(a[dataIndex]) - new Date(b[dataIndex]);
     }
-  }
+  };
 }
 
 function estimateSorter(dataIndex) {
@@ -69,7 +111,7 @@ function estimateSorter(dataIndex) {
     if (a[dataIndex] !== null || b[dataIndex] !== null) {
       return a[dataIndex] - b[dataIndex];
     }
-  }
+  };
 }
 
-export { getDataSource, dateSorter, estimateSorter };
+export { getDataSource, dateSorter, estimateSorter, getInitials, highlightRow };
