@@ -1,4 +1,4 @@
-import { Table, Input, Button, Icon, Dropdown, Menu, Select } from 'antd';
+import { Table, Input, Button, Icon, Select, Tabs } from 'antd';
 import { Query } from 'react-apollo';
 import Highlighter from 'react-highlight-words';
 import {
@@ -23,11 +23,13 @@ class SummaryTable extends React.Component {
       clearFilterFn: () => console.log('nothing to clear'),
       sortedInfo: null,
       selectedColumns: [],
-      highlight: true
+      highlight: true,
+      viewHotListDRF: true
     };
     this.getColumns = this.getColumns.bind(this);
     this.hideColumns = this.hideColumns.bind(this);
     this.toggleHighlight = this.toggleHighlight.bind(this);
+    this.toggleTableView = this.toggleTableView.bind(this);
   }
 
   getColumnSearchProps = dataIndex => ({
@@ -104,6 +106,12 @@ class SummaryTable extends React.Component {
   toggleHighlight(event) {
     this.setState((state, props) => ({
       highlight: !state.highlight
+    }));
+  }
+
+  toggleTableView(event) {
+    this.setState((state, props) => ({
+      viewHotListDRF: !state.viewHotListDRF
     }));
   }
 
@@ -277,7 +285,7 @@ class SummaryTable extends React.Component {
   };
 
   render() {
-    const { clearFilterFn, highlight } = this.state;
+    const { clearFilterFn, highlight, viewHotListDRF } = this.state;
 
     const allColumns = [
       'Remedy Ticket',
@@ -311,7 +319,7 @@ class SummaryTable extends React.Component {
           let dataSource = [{}];
 
           if (data) {
-            dataSource = getDataSource(data.tickets);
+            dataSource = getDataSource(data.tickets, viewHotListDRF);
           }
 
           if (loading) {
@@ -329,6 +337,11 @@ class SummaryTable extends React.Component {
               <ButtonGroup>
                 <Button onClick={this.toggleHighlight}>Highlight</Button>
               </ButtonGroup>
+              <ButtonGroup>
+                <Button onClick={this.toggleTableView}>
+                  {viewHotListDRF ? 'View Release DRF' : 'View HotList DRF'}
+                </Button>
+              </ButtonGroup>
               <Select
                 mode="multiple"
                 style={{ width: '100%' }}
@@ -337,13 +350,14 @@ class SummaryTable extends React.Component {
               >
                 {children}
               </Select>
+              <h1>{viewHotListDRF ? 'HotList DRfs' : 'Release DRFs'}</h1>
               <Table
                 columns={this.getColumns()}
                 dataSource={dataSource}
                 pagination={{ position: 'both' }}
                 size="medium"
                 rowClassName={(record, index) => {
-                  console.log('hightligh in render', highlight);
+                  console.log('hightlight in render', highlight);
                   if (!highlight) {
                     return '';
                   }

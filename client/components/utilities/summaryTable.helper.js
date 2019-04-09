@@ -53,22 +53,45 @@ function highlightRow(row) {
   }
 }
 
-function getDataSource(tickets) {
+function getDataSource(tickets, viewHotListDRF) {
   let dataSource = [];
   tickets.forEach((ticket, index) => {
-    if (ticket.phase === 'In Progress' || ticket.phase === 'Planning') {
-      ticket.product_manager = removeEmailDomain(ticket.product_manager);
-      ticket.business_analyst_lead = removeEmailDomain(ticket.business_analyst_lead);
-      ticket.development_lead = removeEmailDomain(ticket.development_lead);
-      ticket.qa_lead = removeEmailDomain(ticket.qa_lead);
-      ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
-      ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
-      ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
-      ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
-      ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
-      let tableRow = { key: index };
-      tableRow = { ...tableRow, ...ticket };
-      dataSource.push(tableRow);
+    if (viewHotListDRF) {
+      if (
+        ticket.delivery_release_id === 'Dataphile - Off Cycle' &&
+        (ticket.phase === 'In Progress' || ticket.phase === 'Planning')
+      ) {
+        ticket.product_manager = removeEmailDomain(ticket.product_manager);
+        ticket.business_analyst_lead = removeEmailDomain(ticket.business_analyst_lead);
+        ticket.development_lead = removeEmailDomain(ticket.development_lead);
+        ticket.qa_lead = removeEmailDomain(ticket.qa_lead);
+        ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
+        ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
+        ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
+        ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
+        ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
+        let tableRow = { key: index };
+        tableRow = { ...tableRow, ...ticket };
+        dataSource.push(tableRow);
+      }
+    } else {
+      if (
+        ticket.delivery_release_id !== 'Dataphile - Off Cycle' &&
+        (ticket.phase === 'In Progress' || ticket.phase === 'Planning')
+      ) {
+        ticket.product_manager = removeEmailDomain(ticket.product_manager);
+        ticket.business_analyst_lead = removeEmailDomain(ticket.business_analyst_lead);
+        ticket.development_lead = removeEmailDomain(ticket.development_lead);
+        ticket.qa_lead = removeEmailDomain(ticket.qa_lead);
+        ticket.brd_planned_date = formatDate(ticket.brd_planned_date);
+        ticket.frd_planned_date = formatDate(ticket.frd_planned_date);
+        ticket.dev_planned_date = formatDate(ticket.dev_planned_date);
+        ticket.ba_unit_testing_planned_date = formatDate(ticket.ba_unit_testing_planned_date);
+        ticket.qa_test_completion_planned_date = formatDate(ticket.qa_test_completion_planned_date);
+        let tableRow = { key: index };
+        tableRow = { ...tableRow, ...ticket };
+        dataSource.push(tableRow);
+      }
     }
   });
 
