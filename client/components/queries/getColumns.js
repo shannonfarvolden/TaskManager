@@ -6,18 +6,19 @@ const GET_COLUMNS = gql`
       remedy_short_id
       product_manager
       business_analyst_lead
+      business_analyst_team
+      development_manager
       development_lead
-      qa_lead
+      development_team
       phase
+      progress_levels
       brd_planned_date
       frd_planned_date
       dev_planned_date
       ba_unit_testing_planned_date
-      qa_test_completion_planned_date
       summary
       dev_estimate
       ba_estimate
-      qa_estimate
       delivery_release_id
       product_type
       parent_product
