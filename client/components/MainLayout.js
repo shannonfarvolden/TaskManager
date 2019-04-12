@@ -11,7 +11,6 @@ class SiderNav extends React.Component {
   };
 
   onCollapse = collapsed => {
-    console.log(collapsed);
     this.setState({ collapsed });
   };
 
@@ -19,7 +18,7 @@ class SiderNav extends React.Component {
     const { collapsed } = this.state;
     const { handleMenuSelection } = this.props;
     return (
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout style={{ height: '100vh' }}>
         <Sider
           collapsible
           collapsed={collapsed}
@@ -72,7 +71,9 @@ class SiderNav extends React.Component {
             </Menu.Item>
           </Menu>
         </Sider>
-        <Content style={{ margin: '0 16px' }}>{this.props.children}</Content>
+        <Content style={{ margin: '0 1rem' }}>
+          {this.props.children}
+        </Content>
       </Layout>
     );
   }

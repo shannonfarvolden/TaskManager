@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import { Layout } from 'antd';
 import axios from 'axios';
 import fetch from 'isomorphic-unfetch';
-import { MainLayout, MainHeader, DatesChart, SummaryPage } from '../components';
+import { MainLayout, MainHeader, DatesChart, SummaryTable } from '../components';
 import '../components/styles/index.css';
 
 const { Content } = Layout;
@@ -32,10 +32,8 @@ class Index extends Component {
     let { currentView } = this.state;
     return (
       <MainLayout handleMenuSelection={this.handleView}>
-        <Content className="main-content">
-          <MainHeader title="DRF TRACKER" currentView={currentView} />
-        </Content>
-        {currentView === 'summary' ? <SummaryPage /> : <DatesChart />}
+        <MainHeader title="DRF TRACKER" currentView={currentView} />
+        {currentView === 'summary' ? <SummaryTable /> : <DatesChart />}
       </MainLayout>
     );
   }
