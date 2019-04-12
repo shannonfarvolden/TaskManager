@@ -290,7 +290,6 @@ class SummaryTable extends React.Component {
                     pagination={{ position: 'both' }}
                     size="medium"
                     rowClassName={(record) => {
-                      console.log(record)
                       return (!highlight ? '' :  highlightRow(record));
                     }}
                   />
