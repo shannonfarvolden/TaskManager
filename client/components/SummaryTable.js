@@ -1,4 +1,4 @@
-import { Table, Input, Button, Icon, Select, Tabs } from 'antd';
+import { Table, Input, Button, Icon, Select, Tabs, Collapse } from 'antd';
 import { Query } from 'react-apollo';
 import Highlighter from 'react-highlight-words';
 import {
@@ -12,6 +12,7 @@ import ALL_COLUMNS from './utilities/summaryTable.constant';
 import GET_COLUMNS from './queries/getColumns';
 import ErrorPage from './utilities/ErrorPage';
 import LoadingPage from './utilities/LoadingPage';
+import Legend from './Legend';
 import './styles/index.css';
 
 const Option = Select.Option;
@@ -274,13 +275,18 @@ class SummaryTable extends React.Component {
               </Button>
               <Select
                 mode="multiple"
-                style={{ width: '70%' }}
+                style={{ width: '60%' }}
                 placeholder="Select columns to hide"
                 onChange={this.hideColumns}
                 size="large"
               >
                 {children}
               </Select>
+
+            <div id="legend"
+              style={{ display: highlight ? 'block' : 'none' }}>
+              <Legend />
+            </div>
 
               <Tabs defaultActiveKey="releaseDrf" size="large" tabBarStyle={tabBarStyle} onChange={this.handleTabChange}>
                 <TabPane className="tabPane" tab="Release DRFs" key="releaseDrf">

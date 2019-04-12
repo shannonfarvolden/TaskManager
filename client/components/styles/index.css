@@ -48,6 +48,7 @@
 /* SummaryTable */
 
 .summary-table-container {
+  position: relative;
   padding-top: 20px;
 }
 
@@ -86,6 +87,27 @@ td span {
 
 .tabPane {
   overflow-x: scroll;
+}
+
+/* Legend  */
+#legend {
+  z-index: 99;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  transition: 0.3s;
+}
+
+.legend-container {
+  width: 250px;
+  letter-spacing: 1px;
+}
+
+.legend-container p span {
+  display: inline-block;
+  width: 30px;
+  height: 10px;
+  margin-right: 5px;
 }
 
 /* Highlight */
