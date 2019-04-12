@@ -23,6 +23,12 @@
   color: white;
 }
 
+/* Main Header */
+
+.main-header {
+  padding: 1rem;
+}
+
 .main-header .header-title {
   margin-right: 1rem;
   font-size: 1rem;
@@ -32,6 +38,7 @@
   margin-left: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.2rem;
+  color: #002140;
 }
 
 .main-header .circle-right {
@@ -42,17 +49,15 @@
 
 .summary-table-container {
   padding-top: 20px;
-  overflow: auto;
-  max-height: 90vh;
 }
 
-.clear-btn {
-  margin-bottom: 10px;
+.custom-btn {
   letter-spacing: 1px;
+  margin: 0 5px 10px 0;
 }
 
 td span {
-  color: #333;
+  color: black;
 }
 
 .loading-summary-table {
@@ -78,6 +83,12 @@ td span {
   color: maroon;
   letter-spacing: 2px;
 }
+
+.tabPane {
+  overflow-x: scroll;
+}
+
+/* Highlight */
 
 .highlightMissingBRDDueDate {
   background-color: #bbdefb;

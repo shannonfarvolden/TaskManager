@@ -14,8 +14,12 @@ import ErrorPage from './utilities/ErrorPage';
 import LoadingPage from './utilities/LoadingPage';
 import './styles/index.css';
 
-const ButtonGroup = Button.Group;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
+const tabBarStyle = {
+  letterSpacing: 1, marginTop: 20, marginBottom: 0,
+};
+
 class SummaryTable extends React.Component {
   constructor(props) {
     super(props);
@@ -25,12 +29,9 @@ class SummaryTable extends React.Component {
       sortedInfo: null,
       selectedColumns: [],
       highlight: true,
-      viewHotListDRF: true
+      viewHotListDRF: false
     };
     this.getColumns = this.getColumns.bind(this);
-    this.hideColumns = this.hideColumns.bind(this);
-    this.toggleHighlight = this.toggleHighlight.bind(this);
-    this.toggleTableView = this.toggleTableView.bind(this);
   }
 
   getColumnSearchProps = dataIndex => ({
@@ -98,22 +99,25 @@ class SummaryTable extends React.Component {
     });
   };
 
-  hideColumns(value) {
+  hideColumns = (value) => {
     this.setState({
       selectedColumns: value
     });
   }
 
-  toggleHighlight(event) {
+  toggleHighlight = () => {
     this.setState((state, props) => ({
       highlight: !state.highlight
     }));
   }
 
-  toggleTableView(event) {
-    this.setState((state, props) => ({
-      viewHotListDRF: !state.viewHotListDRF
-    }));
+  handleTabChange = (key) => {
+    if (key === 'releaseDrf') {
+      this.setState(() => ({ viewHotListDRF: false }));
+    }
+    if (key === 'hotListDrf') {
+      this.setState(() => ({ viewHotListDRF: true }));
+    }
   }
 
   getColumns = () => {
@@ -250,7 +254,6 @@ class SummaryTable extends React.Component {
           if (data) {
             dataSource = getDataSource(data.tickets, viewHotListDRF);
           }
-
           if (loading) {
             return <LoadingPage />;
           }
@@ -259,40 +262,53 @@ class SummaryTable extends React.Component {
           }
           return (
             <div className="summary-table-container">
-              <Button className="clear-btn" onClick={() => this.handleReset(clearFilterFn)}>
+              <Button size="large" className="custom-btn"
+                onClick={() => this.handleReset(clearFilterFn)}>
                 <Icon type="delete" />
                 Clear Filter
               </Button>
-              <ButtonGroup>
-                <Button onClick={this.toggleHighlight}>Highlight</Button>
-              </ButtonGroup>
-              <ButtonGroup>
-                <Button onClick={this.toggleTableView}>
-                  {viewHotListDRF ? 'View Release DRF' : 'View HotList DRF'}
-                </Button>
-              </ButtonGroup>
+              <Button size="large" className="custom-btn"
+                onClick={this.toggleHighlight}>
+                <Icon type="highlight" />
+                Highlight
+              </Button>
               <Select
                 mode="multiple"
-                style={{ width: '100%' }}
+                style={{ width: '70%' }}
                 placeholder="Select columns to hide"
                 onChange={this.hideColumns}
+                size="large"
               >
                 {children}
               </Select>
-              <h1>{viewHotListDRF ? 'HotList DRfs' : 'Release DRFs'}</h1>
-              <Table
-                columns={this.getColumns()}
-                dataSource={dataSource}
-                pagination={{ position: 'both' }}
-                size="medium"
-                rowClassName={(record, index) => {
-                  if (!highlight) {
-                    return '';
-                  }
-                  return highlightRow(record);
-                }}
-              />
-              ,
+
+              <Tabs defaultActiveKey="releaseDrf" size="large" tabBarStyle={tabBarStyle} onChange={this.handleTabChange}>
+                <TabPane className="tabPane" tab="Release DRFs" key="releaseDrf">
+                  <Table
+                    columns={this.getColumns()}
+                    dataSource={dataSource}
+                    pagination={{ position: 'both' }}
+                    size="medium"
+                    rowClassName={(record) => {
+                      console.log(record)
+                      return (!highlight ? '' :  highlightRow(record));
+                    }}
+                  />
+                </TabPane>
+                <TabPane className="tabPane" tab="HotList DRFs" key="hotListDrf">
+                  <Table
+                      columns={this.getColumns()}
+                      dataSource={dataSource}
+                      pagination={{ position: 'both' }}
+                      size="medium"
+                      rowClassName={(record) => {
+                        return (!highlight ? '' :  highlightRow(record));
+                      }}
+                    />
+                </TabPane>
+              </Tabs>
+
+
             </div>
           );
         }}
