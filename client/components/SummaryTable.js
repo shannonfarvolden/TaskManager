@@ -1,4 +1,4 @@
-import { Table, Input, Button, Icon, Select, Tabs, Collapse } from 'antd';
+import { Table, Input, Button, Icon, Select, Tabs } from 'antd';
 import { Query } from 'react-apollo';
 import Highlighter from 'react-highlight-words';
 import {
@@ -95,15 +95,11 @@ class SummaryTable extends React.Component {
 
   handleReset = clearFilters => {
     clearFilters();
-    this.setState({
-      searchText: ''
-    });
+    this.setState({ searchText: '' });
   };
 
   hideColumns = (value) => {
-    this.setState({
-      selectedColumns: value
-    });
+    this.setState({ selectedColumns: value });
   }
 
   toggleHighlight = () => {
@@ -114,10 +110,10 @@ class SummaryTable extends React.Component {
 
   handleTabChange = (key) => {
     if (key === 'releaseDrf') {
-      this.setState(() => ({ viewHotListDRF: false }));
+      this.setState({ viewHotListDRF: false });
     }
     if (key === 'hotListDrf') {
-      this.setState(() => ({ viewHotListDRF: true }));
+      this.setState({ viewHotListDRF: true });
     }
   }
 
