@@ -16,6 +16,8 @@ import './styles/index.css';
 
 const ButtonGroup = Button.Group;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
+
 class SummaryTable extends React.Component {
   constructor(props) {
     super(props);
@@ -30,7 +32,6 @@ class SummaryTable extends React.Component {
     this.getColumns = this.getColumns.bind(this);
     this.hideColumns = this.hideColumns.bind(this);
     this.toggleHighlight = this.toggleHighlight.bind(this);
-    this.toggleTableView = this.toggleTableView.bind(this);
   }
 
   getColumnSearchProps = dataIndex => ({
@@ -110,7 +111,7 @@ class SummaryTable extends React.Component {
     }));
   }
 
-  toggleTableView(event) {
+  callback = (key) => {
     this.setState((state, props) => ({
       viewHotListDRF: !state.viewHotListDRF
     }));
@@ -266,11 +267,6 @@ class SummaryTable extends React.Component {
               <ButtonGroup>
                 <Button onClick={this.toggleHighlight}>Highlight</Button>
               </ButtonGroup>
-              <ButtonGroup>
-                <Button onClick={this.toggleTableView}>
-                  {viewHotListDRF ? 'View Release DRF' : 'View HotList DRF'}
-                </Button>
-              </ButtonGroup>
               <Select
                 mode="multiple"
                 style={{ width: '100%' }}
@@ -279,20 +275,33 @@ class SummaryTable extends React.Component {
               >
                 {children}
               </Select>
-              <h1>{viewHotListDRF ? 'HotList DRfs' : 'Release DRFs'}</h1>
-              <Table
-                columns={this.getColumns()}
-                dataSource={dataSource}
-                pagination={{ position: 'both' }}
-                size="medium"
-                rowClassName={(record, index) => {
-                  if (!highlight) {
-                    return '';
-                  }
-                  return highlightRow(record);
-                }}
-              />
-              ,
+
+              <Tabs defaultActiveKey="releaseDrf" size="large" tabBarStyle={{ letterSpacing: 1, marginTop: 20 }} onChange={this.callback}>
+                <TabPane tab="Release DRFs" key="releaseDrf">
+                  <Table
+                    columns={this.getColumns()}
+                    dataSource={dataSource}
+                    pagination={{ position: 'both' }}
+                    size="medium"
+                    rowClassName={(record) => {
+                      return (!highlight ? '' :  highlightRow(record));
+                    }}
+                  />
+                </TabPane>
+                <TabPane tab="HotList DRFs" key="hotListDrf">
+                  <Table
+                      columns={this.getColumns()}
+                      dataSource={dataSource}
+                      pagination={{ position: 'both' }}
+                      size="medium"
+                      rowClassName={(record) => {
+                        return (!highlight ? '' :  highlightRow(record));
+                      }}
+                    />
+                </TabPane>
+              </Tabs>
+
+
             </div>
           );
         }}
