@@ -16,7 +16,7 @@ function removeEmailDomain(emails) {
 }
 
 function formatDate(dateObj) {
-  return dateObj ? moment(dateObj).format('MM/DD/YY') : null;
+  return dateObj ? moment(new Date(dateObj)).format('MM/DD/YY') : null;
 }
 
 function getInitials(fullNames) {
