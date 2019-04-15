@@ -26,7 +26,8 @@
     "react": "^16.7.0",
     "react-apollo": "^2.5.2",
     "react-chartjs-2": "^2.7.4",
-    "react-dom": "^16.7.0"
+    "react-dom": "^16.7.0",
+    "react-highlight-words": "^0.16.0"
   },
   "babel": {
     "env": {
