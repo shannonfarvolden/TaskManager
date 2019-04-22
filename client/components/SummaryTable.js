@@ -18,7 +18,9 @@ import './styles/index.css';
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 const tabBarStyle = {
-  letterSpacing: 1, marginTop: 20, marginBottom: 0,
+  letterSpacing: 1,
+  marginTop: 20,
+  marginBottom: 0
 };
 
 class SummaryTable extends React.Component {
@@ -98,24 +100,24 @@ class SummaryTable extends React.Component {
     this.setState({ searchText: '' });
   };
 
-  hideColumns = (value) => {
+  hideColumns = value => {
     this.setState({ selectedColumns: value });
-  }
+  };
 
   toggleHighlight = () => {
     this.setState((state, props) => ({
       highlight: !state.highlight
     }));
-  }
+  };
 
-  handleTabChange = (key) => {
+  handleTabChange = key => {
     if (key === 'releaseDrf') {
       this.setState({ viewHotListDRF: false });
     }
     if (key === 'hotListDrf') {
       this.setState({ viewHotListDRF: true });
     }
-  }
+  };
 
   getColumns = () => {
     return [
@@ -259,13 +261,15 @@ class SummaryTable extends React.Component {
           }
           return (
             <div className="summary-table-container">
-              <Button size="large" className="custom-btn"
-                onClick={() => this.handleReset(clearFilterFn)}>
+              <Button
+                size="large"
+                className="custom-btn"
+                onClick={() => this.handleReset(clearFilterFn)}
+              >
                 <Icon type="delete" />
                 Clear Filter
               </Button>
-              <Button size="large" className="custom-btn"
-                onClick={this.toggleHighlight}>
+              <Button size="large" className="custom-btn" onClick={this.toggleHighlight}>
                 <Icon type="highlight" />
                 Highlight
               </Button>
@@ -279,37 +283,39 @@ class SummaryTable extends React.Component {
                 {children}
               </Select>
 
-            <div id="legend"
-              style={{ display: highlight ? 'block' : 'none' }}>
-              <Legend />
-            </div>
+              <div id="legend" style={{ display: highlight ? 'block' : 'none' }}>
+                <Legend />
+              </div>
 
-              <Tabs defaultActiveKey="releaseDrf" size="large" tabBarStyle={tabBarStyle} onChange={this.handleTabChange}>
+              <Tabs
+                defaultActiveKey="releaseDrf"
+                size="large"
+                tabBarStyle={tabBarStyle}
+                onChange={this.handleTabChange}
+              >
                 <TabPane className="tabPane" tab="Release DRFs" key="releaseDrf">
                   <Table
                     columns={this.getColumns()}
                     dataSource={dataSource}
-                    pagination={{ position: 'both' }}
+                    pagination={{ position: 'both', showSizeChanger: true, pageSize: 50 }}
                     size="medium"
-                    rowClassName={(record) => {
-                      return (!highlight ? '' :  highlightRow(record));
+                    rowClassName={record => {
+                      return !highlight ? '' : highlightRow(record);
                     }}
                   />
                 </TabPane>
                 <TabPane className="tabPane" tab="HotList DRFs" key="hotListDrf">
                   <Table
-                      columns={this.getColumns()}
-                      dataSource={dataSource}
-                      pagination={{ position: 'both' }}
-                      size="medium"
-                      rowClassName={(record) => {
-                        return (!highlight ? '' :  highlightRow(record));
-                      }}
-                    />
+                    columns={this.getColumns()}
+                    dataSource={dataSource}
+                    pagination={{ position: 'both', showSizeChanger: true, pageSize: 50 }}
+                    size="medium"
+                    rowClassName={record => {
+                      return !highlight ? '' : highlightRow(record);
+                    }}
+                  />
                 </TabPane>
               </Tabs>
-
-
             </div>
           );
         }}

@@ -52,11 +52,16 @@ function getDataSource(tickets, viewHotListDRF) {
   for (let idx in tickets) {
     if (
       (viewHotListDRF && tickets[idx].delivery_release_id !== 'Dataphile - Off Cycle') ||
-      (!viewHotListDRF && tickets[idx].delivery_release_id === 'Dataphile - Off Cycle')
+      (!viewHotListDRF &&
+        (tickets[idx].delivery_release_id === 'Dataphile - Off Cycle' ||
+          tickets[idx].delivery_release_id === null))
     ) {
       continue;
     }
-    if (tickets[idx].phase === 'In Progress' || tickets[idx].phase === 'Planning') {
+    if (
+      (tickets[idx].phase === 'In Progress' || tickets[idx].phase === 'Planning') &&
+      tickets[idx].progress_levels !== 'In UAT'
+    ) {
       tickets[idx].pm_ba = removeEmailDomain(
         [
           tickets[idx].product_manager,
