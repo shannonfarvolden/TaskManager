@@ -60,7 +60,7 @@ function getDataSource(tickets, viewHotListDRF) {
     }
     if (
       (tickets[idx].phase === 'In Progress' || tickets[idx].phase === 'Planning') &&
-      tickets[idx].progress_levels !== 'In UAT'
+      ['QA Testing', 'In UAT'].indexOf(tickets[idx].progress_levels) === -1
     ) {
       tickets[idx].pm_ba = removeEmailDomain(
         [
