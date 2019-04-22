@@ -166,7 +166,7 @@ class SummaryTable extends React.Component {
         dataIndex: 'brd_planned_date',
         sorter: dateSorter('brd_planned_date'),
         sortDirections: ['descend', 'ascend'],
-        className: this.state.selectedColumns.includes('BRD') ? 'hide' : '',
+        className: this.state.selectedColumns.includes('BRD - DueDate') ? 'hide' : '',
         ...this.getColumnSearchProps('brd_planned_date')
       },
       {
@@ -174,7 +174,7 @@ class SummaryTable extends React.Component {
         dataIndex: 'frd_planned_date',
         sorter: dateSorter('frd_planned_date'),
         sortDirections: ['descend', 'ascend'],
-        className: this.state.selectedColumns.includes('FRD') ? 'hide' : '',
+        className: this.state.selectedColumns.includes('FRD - DueDate') ? 'hide' : '',
         ...this.getColumnSearchProps('frd_planned_date')
       },
       {
