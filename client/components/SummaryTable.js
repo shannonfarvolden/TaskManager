@@ -162,14 +162,6 @@ class SummaryTable extends React.Component {
         ...this.getColumnSearchProps('phase_progress_level')
       },
       {
-        title: 'BRD Due Date',
-        dataIndex: 'brd_planned_date',
-        sorter: dateSorter('brd_planned_date'),
-        sortDirections: ['descend', 'ascend'],
-        className: this.state.selectedColumns.includes('BRD - DueDate') ? 'hide' : '',
-        ...this.getColumnSearchProps('brd_planned_date')
-      },
-      {
         title: 'FRD Due Date',
         dataIndex: 'frd_planned_date',
         sorter: dateSorter('frd_planned_date'),

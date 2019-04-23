@@ -112,10 +112,6 @@ td span {
 
 /* Highlight */
 
-.highlightMissingBRDDueDate {
-  background-color: #bbdefb;
-}
-
 .highlightMissingDEVDueDate {
   background-color: #76d7d6;
 }

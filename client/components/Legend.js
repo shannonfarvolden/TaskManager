@@ -11,9 +11,6 @@ class Legend extends React.Component {
     return (
       <Collapse onChange={this.callback} className="legend-container">
         <Panel header="Legend: Missing Highlights" key="legend">
-          <p><span class="highlightMissingBRDDueDate"></span>
-            Missing BRD Due Date
-          </p>
           <p><span class="highlightMissingDEVDueDate"></span>
             Missing DEV Due Date</p>
           <p><span class="highlightMissingBADueDate"></span>
