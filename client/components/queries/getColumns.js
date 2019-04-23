@@ -12,7 +12,6 @@ const GET_COLUMNS = gql`
       development_team
       phase
       progress_levels
-      brd_planned_date
       frd_planned_date
       dev_planned_date
       ba_unit_testing_planned_date

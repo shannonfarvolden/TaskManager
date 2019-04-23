@@ -34,9 +34,7 @@ function getInitials(fullNames) {
 }
 
 function highlightRow(row) {
-  if (!row.brd_planned_date) {
-    return 'highlightMissingBRDDueDate';
-  } else if (!row.dev_planned_date) {
+  if (!row.dev_planned_date) {
     return 'highlightMissingDEVDueDate';
   } else if (!row.ba_unit_testing_planned_date) {
     return 'highlightMissingBADueDate';
@@ -76,8 +74,7 @@ function getDataSource(tickets, viewHotListDRF) {
           tickets[idx].development_team
         ].join(',')
       );
-      tickets[idx].phase_progress_level = `${tickets[idx].phase} - ${tickets[idx].progress_levels}`;
-      tickets[idx].brd_planned_date = formatDate(tickets[idx].brd_planned_date);
+      tickets[idx].phase_progress_level = `${tickets[idx].progress_levels} - ${tickets[idx].phase}`;
       tickets[idx].frd_planned_date = formatDate(tickets[idx].frd_planned_date);
       tickets[idx].dev_planned_date = formatDate(tickets[idx].dev_planned_date);
       tickets[idx].ba_unit_testing_planned_date = formatDate(

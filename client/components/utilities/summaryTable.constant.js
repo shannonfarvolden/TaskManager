@@ -3,7 +3,6 @@ const ALL_COLUMNS = [
   'PM/BA',
   'Dev',
   'Status',
-  'BRD - DueDate',
   'FRD - DueDate',
   'Dev - DueDate',
   'BAT - DueDate',
